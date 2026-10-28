@@ -1,0 +1,11 @@
+{
+  "name": "mk-produto",
+  "displayName": "mK Produto",
+  "version": "0.5.1",
+  "description": "Fluxo de produto da mK com templates nomeados pelo que entregam: Ficha do Projeto (etapa 3, ficha-do-projeto), Mapa do Projeto (mapa-do-projeto), Issues do Projeto no Linear (projeto-issues) e Linha do Tempo de Fases (linha-do-tempo) e Esboço (esboco), para o formato que ainda não tem molde. Motor copiado do VANTA com a camada da mK. Framing e PRD da Entrega virão.",
+  "author": {
+    "name": "metaKosmos",
+    "url": "https://metakosmos.com.br"
+  },
+  "license": "UNLICENSED"
+}

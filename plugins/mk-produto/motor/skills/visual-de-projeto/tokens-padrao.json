@@ -1,0 +1,32 @@
+{
+  "versao": 1,
+  "nome": "padrão do motor (neutro)",
+  "fontes": {
+    "titulo": {
+      "familia": "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      "peso": 700,
+      "url": null,
+      "caixa": "none"
+    },
+    "corpo": {
+      "familia": "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      "peso": 400,
+      "url": null
+    }
+  },
+  "cores": {
+    "fundo": "#FFFFFF",
+    "texto": "#18181B",
+    "texto_suave": "#52525B",
+    "borda": "#E4E4E7",
+    "borda_forte": "rgba(0,0,0,.32)",
+    "superficie": "#F4F4F5",
+    "linha_leve": "#EDEDF0",
+    "apagado": "#A1A1AA",
+    "inverso": "#FFFFFF",
+    "alerta": "#DC2626",
+    "acento": "#7C3AED"
+  },
+  "raio": { "card": "16px", "grande": "32px" },
+  "medidas": { "titulo_largura_char": 0.58 }
+}

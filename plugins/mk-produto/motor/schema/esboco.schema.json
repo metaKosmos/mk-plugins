@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "vanta-produto/esboco.schema.json",
+  "title": "esboco.json (v1)",
+  "description": "A especificação de um esboço: as 2 ou 3 direções de organizar o mesmo conteúdo e, depois da escolha, a prancha final. Cada bloco declara o elemento visual que o representa. O montar-esboco.mjs lê este arquivo e os fragmentos HTML que ele aponta.",
+  "type": "object",
+  "required": ["versao", "titulo", "pedido", "direcoes"],
+  "additionalProperties": false,
+  "$defs": {
+    "visual": { "type": "string", "enum": ["fluxograma", "diagrama-de-blocos", "linha-do-tempo", "matriz", "grafico", "mapa-de-jornada", "amostras-de-design"], "description": "Elemento visual (SVG inline ou elemento do tipo Design): fluxograma, diagrama-de-blocos (arquitetura), linha-do-tempo, matriz, grafico (só com dado com fonte), mapa-de-jornada, amostras-de-design." },
+    "visualOuTexto": { "type": "string", "enum": ["fluxograma", "diagrama-de-blocos", "linha-do-tempo", "matriz", "grafico", "mapa-de-jornada", "amostras-de-design", "texto"], "description": "Como 'visual', mais 'texto': bloco sem elemento visual, que só apoia." },
+    "estrutura": {
+      "type": "array",
+      "minItems": 3,
+      "description": "Os blocos do material, em ordem, cada um como {bloco, visual}. Texto solto vale como bloco de visual 'texto'. No mínimo 3: abaixo disso é item, não formato.",
+      "items": {
+        "anyOf": [
+          { "type": "string", "minLength": 1 },
+          {
+            "type": "object",
+            "required": ["bloco", "visual"],
+            "additionalProperties": false,
+            "properties": {
+              "bloco": { "type": "string", "minLength": 1 },
+              "visual": { "$ref": "#/$defs/visualOuTexto" },
+              "fonte": { "type": "string", "minLength": 1, "description": "De onde vem o dado do gráfico. Obrigatória quando visual é 'grafico': gráfico só com dado com fonte." }
+            }
+          }
+        ]
+      }
+    },
+    "altura": { "type": "integer", "minimum": 200, "description": "Altura da prancha em px. Vem da captura, não do palpite. Teto 8000." }
+  },
+  "properties": {
+    "versao": { "const": 1 },
+    "titulo": { "type": "string", "minLength": 1, "description": "Título do canvas: o nome do material, sem prefixo de empresa." },
+    "pedido": { "type": "string", "minLength": 1, "description": "O pedido de quem rodou, em uma frase." },
+    "leitor": { "type": "string", "enum": ["visual", "textual"], "description": "Quem lê. Ausente vale 'visual', o padrão para material de produto e processo. 'textual' só quando quem pediu declarou: sem isso, direção sem bloco visual é reprovada." },
+    "uso": { "type": "string", "minLength": 1, "description": "Para que o leitor usa o material (decidir, operar, apresentar...), em uma frase." },
+    "direcoes": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["rotulo", "nome", "privilegia", "estrutura", "arquivo", "h"],
+        "additionalProperties": false,
+        "properties": {
+          "rotulo": { "type": "string", "pattern": "^[A-C]$" },
+          "nome": { "type": "string", "minLength": 1 },
+          "privilegia": { "type": "string", "minLength": 1 },
+          "visual_dominante": { "$ref": "#/$defs/visual", "description": "O elemento visual que domina a direção. Obrigatório quando o leitor é visual, tem de aparecer nos blocos da direção, e as direções diferem nele." },
+          "estrutura": { "$ref": "#/$defs/estrutura" },
+          "arquivo": { "type": "string", "minLength": 1, "description": "Fragmento HTML da prancha, relativo à pasta do esboco.json." },
+          "h": { "$ref": "#/$defs/altura" },
+          "origem": { "type": ["string", "null"], "description": "Direção vinda do registro de esboços ou de um template: de onde veio (data do registro ou nome do template)." }
+        }
+      }
+    },
+    "final": {
+      "type": "object",
+      "required": ["escolha", "estrutura", "arquivo", "h"],
+      "additionalProperties": false,
+      "properties": {
+        "escolha": { "type": "string", "minLength": 1, "description": "O que o David escolheu, nos rótulos dele ('A', 'A com o bloco X de C')." },
+        "estrutura": { "$ref": "#/$defs/estrutura" },
+        "arquivo": { "type": "string", "minLength": 1 },
+        "h": { "$ref": "#/$defs/altura" }
+      }
+    },
+    "lacunas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["o_que_falta", "depende_de"],
+        "additionalProperties": false,
+        "properties": { "o_que_falta": { "type": "string", "minLength": 1 }, "depende_de": { "type": "string", "minLength": 1 } }
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "mk-plugins",
+  "owner": {
+    "name": "metaKosmos",
+    "url": "https://metakosmos.com.br"
+  },
+  "description": "Plugins da mK para quem opera, sem conta no GitHub. Público e sem segredo: cada login fica na máquina e na conta de quem instala.",
+  "plugins": [
+    {
+      "name": "mk-produto",
+      "source": "./plugins/mk-produto",
+      "displayName": "mK Produto",
+      "description": "Fluxo de produto da mK: ficha-do-projeto levanta as fontes e gera a Ficha do Projeto (etapa 3), mapa-do-projeto publica o canvas Conceito, Capacidades, Roadmap e Hipóteses, projeto-issues quebra o projeto aprovado em issues no Linear mK, linha-do-tempo monta as fases em barras com o bloco \"Depois\", esboco explora formatos novos e registra o escolhido. Motor copiado do VANTA, camada da mK.",
+      "category": "workflow",
+      "keywords": [
+        "produto",
+        "projeto",
+        "canvas",
+        "roadmap",
+        "hipoteses",
+        "metakosmos"
+      ]
+    },
+    {
+      "name": "mk-linear",
+      "source": "./plugins/mk-linear",
+      "displayName": "mK Linear",
+      "description": "O Linear da mK como servidor do Claude Code, com o login guardado so na maquina de quem instala. Serve de fonte e de escrita para o mK Produto.",
+      "category": "workflow",
+      "keywords": [
+        "linear",
+        "mcp",
+        "metakosmos"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "versao": 1,
+  "empresa": {
+    "nome": "metaKosmos",
+    "rotulo_canvas": "mK"
+  },
+  "escrita": {
+    "travessao_proibido": true,
+    "idioma": "pt-BR",
+    "regras": "Português brasileiro com diacríticos, sem traço longo nem meia-risca, sem emoji."
+  },
+  "marca": {
+    "regra_texto": "A marca é \"mK\" (m minúsculo, K maiúsculo), nunca \"MK\", \"Mk\" ou \"mk\". Produtos: \"mK Fashion+\", \"mK AI Studio\" e \"mK Platform\" (nome do Linear como \"mKPlatform ...\" entra no documento já normalizado).",
+    "preservar_caixa": ["mK"],
+    "reprovar": [
+      {
+        "padrao": "{{ANTES}}(MK|Mk|mk)(?![\\w/.@-])",
+        "mensagem": "marca escrita \"MK\", \"Mk\" ou \"mk\". A grafia é \"mK\""
+      }
+    ],
+    "normalizar": [
+      {
+        "padrao": "{{ANTES}}m\\s?k\\s?fashion\\s?\\+|{{ANTES}}mkf\\+",
+        "ignorar_caixa": true,
+        "para": "mK Fashion+",
+        "aceitar": ["mK Fashion+"]
+      },
+      {
+        "padrao": "{{ANTES}}m\\s?k\\s?fashion(?!\\s?\\+)",
+        "ignorar_caixa": true,
+        "para": "mK Fashion",
+        "aceitar": ["mK Fashion"]
+      },
+      {
+        "padrao": "{{ANTES}}m\\s?k\\s?ai\\s?studio",
+        "ignorar_caixa": true,
+        "para": "mK AI Studio",
+        "aceitar": ["mK AI Studio"]
+      },
+      {
+        "padrao": "{{ANTES}}m\\s?k\\s?platform",
+        "ignorar_caixa": true,
+        "para": "mK Platform",
+        "aceitar": ["mK Platform"]
+      }
+    ]
+  },
+  "areas": [
+    { "nome": "Dados / mK Insights", "cor": "#7DD3FC", "padrao": "^\\s*dados\\s*:", "ignorar_caixa": true, "vence_no_prefixo": true },
+    { "nome": "mK Platform", "cor": "#E10600", "padrao": "{{ANTES}}m\\s?k\\s?platform", "ignorar_caixa": true },
+    { "nome": "mK Fashion+", "cor": "#DC0B9F", "padrao": "{{ANTES}}m\\s?k\\s?fashion|{{ANTES}}mkf\\+", "ignorar_caixa": true },
+    { "nome": "mK AI Studio", "cor": "#D0FB12", "padrao": "{{ANTES}}m\\s?k\\s?ai\\s?studio", "ignorar_caixa": true },
+    { "nome": "mK Insights", "cor": "#7DD3FC", "padrao": "{{ANTES}}m\\s?k\\s?insights", "ignorar_caixa": true }
+  ],
+  "acento_padrao": "#7C3AED",
+  "fontes": {
+    "linear": {
+      "habilitada": true,
+      "servidor": "mcp__plugin_mk-linear_linear-mk__",
+      "servidor_alternativo": "mcp__claude_ai_Linear__",
+      "proibido": ["mcp__plugin_vanta-identidade_linear-214__"],
+      "como": "Só o workspace metaKosmos do Linear. Ordem: 1) servidor linear-mk (plugin mk-linear), se existir na sessão; 2) sem ele, o conector Linear do claude.ai (servidor_alternativo), e só depois de confirmar com get_workspace (ou get_team) que ele responde pelo workspace metaKosmos (url linear.app/metakosmos). Outro workspace, ou sem confirmação: pare nesta fonte e avise. Nunca o linear-214. As ferramentas são adiadas: carregue os esquemas com ToolSearch antes. Servidor não autenticado: pare nesta fonte e diga para renovar com /mcp (linear-mk) ou reconectar o Linear nos conectores do claude.ai."
+    },
+    "granola": { "habilitada": true, "servidor": "mcp__claude_ai_Granola__" },
+    "slack": { "habilitada": true, "servidor": "mcp__claude_ai_Slack__" },
+    "drive": {
+      "habilitada": true,
+      "cli": "gws",
+      "conta_dominio": "metakosmos.com.br",
+      "servidor": "mcp__claude_ai_Google_Drive__",
+      "como": "gws autenticado com conta @metakosmos.com.br. Outro domínio: pare e avise. Sem o gws, o documento é criado pelo conector Google Drive do claude.ai; as versões seguintes precisam do gws (ou colar o conteúdo à mão no mesmo Doc)."
+    },
+    "locais": {
+      "habilitada": true,
+      "pastas": [],
+      "marcadores": ["decisions/", "sessions/", "context/", "projects/"],
+      "como": "Opcional. O vault de notas (David-OS) só existe na máquina do David: pasta indicada por quem roda ou detectada pelos marcadores na raiz do repositório atual. Sem pasta, a fonte fica como não aplicável e a skill segue com as outras."
+    }
+  },
+  "gestor": {
+    "servidor": "mcp__plugin_mk-linear_linear-mk__",
+    "servidor_alternativo": "mcp__claude_ai_Linear__",
+    "proibido": ["mcp__plugin_vanta-identidade_linear-214__"],
+    "time": "Product",
+    "estado_inicial": "Backlog",
+    "escada_pontos": [1, 2, 3, 5, 8],
+    "teto_pontos": 5,
+    "contrato_campos": ["Modo", "Fluxo", "Repos", "Pode mexer em", "Resultado", "O que entrega", "Teste principal", "Portão", "Fora", "Se nunca for feita", "Contexto"],
+    "termos_mecanismo": [],
+    "labels": [],
+    "quem_atribui": "o lead do projeto",
+    "como": "Só o workspace metaKosmos do Linear, time Product. Ordem: 1) servidor linear-mk (plugin mk-linear), se existir na sessão; 2) sem ele, o conector Linear do claude.ai, e só depois de confirmar com get_workspace (ou get_team) que ele responde pelo workspace metaKosmos (url linear.app/metakosmos), antes de qualquer escrita. Outro workspace, ou sem confirmação: não crie nada e avise. Nunca o linear-214."
+  },
+  "documento": {
+    "nome_arquivo": "{produto} | Projeto {nome} - v{versao} | {data}",
+    "pasta_drive_id": null
+  },
+  "canvas": { "type_url": "https://claude.ai/artifact/QKN21svewxgyPb6SYRqWnd" },
+  "esbocos": { "registro": null }
+}

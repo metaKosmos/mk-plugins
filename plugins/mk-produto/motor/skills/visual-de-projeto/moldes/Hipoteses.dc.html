@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Projeto · hipóteses</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<!--vp:tokens-->
+<style>
+body{margin:0;background:var(--vp-fundo)}
+a{color:var(--lk,var(--vp-acento));text-decoration-color:var(--lkc,currentColor);text-decoration-thickness:var(--lkt,auto);text-underline-offset:var(--lko,auto)}a:hover{color:var(--vp-texto)}
+</style>
+</helmet>
+<div style="width: 1440px; box-sizing: border-box; padding: 64px; background: var(--vp-fundo); color: var(--vp-texto); font-family: var(--vp-fonte-corpo); font-weight: var(--vp-corpo-peso); display: flex; flex-direction: column; gap: 100px; {{linkVars}}">
+
+  <div style="display: flex; justify-content: space-between; align-items: center; gap: 24px;">
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: none;">{{topoTxt}}</div>
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">{{refTxt}}</div>
+  </div>
+
+  <sc-if value="{{carregando}}" hint-placeholder-val="{{false}}">
+    <div style="border: 1px dashed var(--vp-borda); border-radius: var(--vp-raio-grande); padding: 48px; font-size: 18px; color: var(--vp-texto-suave);">Carregando dados do projeto…</div>
+  </sc-if>
+
+  <sc-if value="{{falhou}}" hint-placeholder-val="{{false}}">
+    <div style="border: 1px solid var(--vp-alerta); border-radius: var(--vp-raio-grande); padding: 48px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-alerta);">Dados do projeto indisponíveis</div>
+      <div style="font-size: 18px; line-height: 1.45;">O canvas não conseguiu ler dados/projeto.json. Republique o arquivo e recarregue a página.</div>
+      <div style="font-size: 13px; color: var(--vp-texto-suave);">Detalhe técnico: {{erroMsg}}</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{pronto}}" hint-placeholder-val="{{true}}">
+
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">Hipóteses</div>
+      <h1 style="margin: 0; font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 96px; line-height: 0.95; text-transform: var(--vp-titulo-caixa);">O que o projeto <span style="{{accentGrande}}">precisa provar</span></h1>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-end; max-width: 560px;">
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end;">
+        <sc-for list="{{situacoes}}" as="s" hint-placeholder-count="2">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--vp-texto);">{{s.rotulo}} · {{s.n}}</span>
+        </sc-for>
+      </div>
+      <div style="font-size: 12px; color: var(--vp-texto-suave); text-align: right;">Cada hipótese traz a métrica que a prova, o resultado esperado e a ferramenta de medição.</div>
+    </div>
+  </div>
+
+  <sc-if value="{{temHip}}" hint-placeholder-val="{{true}}">
+  <div style="display: flex; flex-direction: column; border: 1px solid var(--vp-borda); border-radius: var(--vp-raio-grande); overflow: hidden;">
+    <div style="display: grid; grid-template-columns: 72px minmax(0, 1.7fr) minmax(0, 1.1fr) minmax(0, 1.1fr) minmax(0, 1fr) 190px; gap: 24px; padding: 16px 32px; background: var(--vp-superficie); border-bottom: 1px solid var(--vp-borda); font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--vp-texto-suave);">
+      <span>Id</span><span>Hipótese</span><span>Métrica</span><span>Resultado esperado</span><span>Ferramenta</span><span>Situação e fonte</span>
+    </div>
+    <sc-for list="{{linhas}}" as="h" hint-placeholder-count="4">
+      <div style="display: grid; grid-template-columns: 72px minmax(0, 1.7fr) minmax(0, 1.1fr) minmax(0, 1.1fr) minmax(0, 1fr) 190px; gap: 24px; padding: 24px 32px; border-bottom: 1px solid var(--vp-borda); align-items: start;">
+        <span style="font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 28px; line-height: 1; {{accentGrande}} text-transform: none;">{{h.id}}</span>
+        <span style="font-size: 16px; font-weight: 700; line-height: 1.4; overflow-wrap: anywhere;">{{h.hipotese}}</span>
+        <span style="{{h.metricaEstilo}}">{{h.metrica}}</span>
+        <span style="{{h.resultadoEstilo}}">{{h.resultado}}</span>
+        <span style="{{h.ferramentaEstilo}}">{{h.ferramenta}}</span>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start; min-width: 0;">
+          <span style="{{h.situacaoEstilo}}">{{h.situacao}}</span>
+          <sc-if value="{{h.fonteLink}}" hint-placeholder-val="{{false}}"><a href="{{h.fonteUrl}}" style="font-size: 12px; line-height: 1.4; overflow-wrap: anywhere;">Fonte: abrir link</a></sc-if>
+          <sc-if value="{{h.fonteTexto}}" hint-placeholder-val="{{true}}"><span style="{{h.fonteEstilo}}">{{h.fonte}}</span></sc-if>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{semHip}}" hint-placeholder-val="{{false}}">
+    <div style="border: 1px dashed var(--vp-borda-forte); border-radius: var(--vp-raio-grande); padding: 48px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">Sem hipóteses registradas</div>
+      <div style="font-size: 20px; line-height: 1.45; max-width: 1000px;">{{vazioHip}}</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{mostraLacunas}}" hint-placeholder-val="{{false}}">
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; {{accentTexto}}">Lacunas desta prancha</div>
+    <div style="display: flex; flex-direction: column; border: 1px solid var(--vp-borda); border-radius: var(--vp-raio-grande); overflow: hidden;">
+      <sc-for list="{{lacunas}}" as="l" hint-placeholder-count="1">
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: baseline; padding: 20px 32px; border-bottom: 1px solid var(--vp-borda);">
+          <span style="font-size: 16px; font-weight: 700; line-height: 1.4;">{{l.falta}}</span>
+          <span style="font-size: 13px; line-height: 1.4; color: var(--vp-texto-suave);">Depende de: {{l.depende}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--vp-borda); padding-top: 16px;">
+    <div style="display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; line-height: 1.5; color: var(--vp-texto-suave);">
+      <span style="font-weight: 700; color: var(--vp-texto);">Fontes:</span>
+      <sc-for list="{{refFontes}}" as="f" hint-placeholder-count="2">
+        <sc-if value="{{f.link}}" hint-placeholder-val="{{false}}"><a href="{{f.url}}">{{f.rotulo}}</a></sc-if>
+        <sc-if value="{{f.texto}}" hint-placeholder-val="{{true}}"><span>{{f.rotulo}}</span></sc-if>
+      </sc-for>
+      <sc-if value="{{semRefFontes}}" hint-placeholder-val="{{false}}"><span>nenhuma fonte registrada no projeto.json</span></sc-if>
+    </div>
+    <div style="font-size: 12px; line-height: 1.5; color: var(--vp-texto-suave);">{{refTxt}}. Hipótese sem fonte não entra: vira lacuna. Conteúdo lido de dados/projeto.json.</div>
+  </div>
+
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"","options":["__VP_OPCOES__"]},"linhaDe":{"editor":"int","default":0,"min":0,"max":999},"linhaAte":{"editor":"int","default":999,"min":0,"max":999},"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = { d: null, erro: null };
+  }
+  componentDidMount() {
+    var self = this;
+    fetch('dados/projeto.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) { self.setState({ d: d, erro: null }); })
+      .catch(function (e) { self.setState({ erro: String((e && e.message) || e) }); });
+  }
+  renderVals() {
+    var VP = /*vp:config*/{"caixa":"none","preservar":[],"marca":"","cores":{"fundo":"#ffffff","acento":"#7c3aed"}}/*vp:fim*/;
+    var ROTULO = (VP.marca ? VP.marca + ' ' : '') + 'PROJETO';
+    var d = this.state.d, erro = this.state.erro;
+    function norm(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z_]/g, ''); }
+    function up(s) { var t = String(s == null ? '' : s); if (VP.caixa !== 'uppercase') return t; t = t.toUpperCase(); VP.preservar.forEach(function (w) { var re = new RegExp('(^|[^A-Za-z0-9])' + w.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![a-z])', 'g'); t = t.replace(re, function (m, a) { return a + w; }); }); return t; }
+    function has(s) { return s !== null && s !== undefined && String(s).trim() !== ''; }
+    function dataBr(s) { if (!/^\d{4}-\d{2}-\d{2}$/.test(s || '')) return null; var p = s.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+    var pronto = !!d;
+    var out = { carregando: !d && !erro, falhou: !d && !!erro, pronto: pronto, erroMsg: erro || '' };
+    if (!pronto) { out.accent = VP.cores.acento; out.accentGrande = 'color: ' + VP.cores.acento + ';'; out.accentTexto = 'color: ' + VP.cores.acento + ';'; out.linkVars = ''; out.topoTxt = ROTULO + ' · PRANCHA 4'; out.refTxt = ''; return out; }
+    var P = d.projeto || {};
+    var accent = (this.props.accent && /^#[0-9a-fA-F]{6}$/.test(this.props.accent)) ? this.props.accent : ((P.acento && /^#[0-9a-fA-F]{6}$/.test(P.acento)) ? P.acento : VP.cores.acento);
+    function lumC(h) { var v = [1, 3, 5].map(function (k) { var c = parseInt(h.substr(k, 2), 16) / 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; }
+    function contBranco(h) { var a = lumC(VP.cores.fundo) + 0.05, b = lumC(h) + 0.05; return a > b ? a / b : b / a; }
+    // acento claro (ex.: um azul claro) não serve de cor de texto sobre o fundo: o texto vira a cor de texto do tema e o acento vira realce
+    function corTexto(h, min) { return contBranco(h) >= min ? h : 'var(--vp-texto)'; }
+    function textoSobre(fundo) { return contBranco(fundo) >= 4.5 ? 'var(--vp-inverso)' : 'var(--vp-texto)'; }
+    var accentGrande = contBranco(accent) >= 3 ? 'color: ' + accent + ';' : 'color: var(--vp-texto); background: linear-gradient(transparent 58%, ' + accent + ' 58%);';
+    var accentTexto = contBranco(accent) >= 4.5 ? 'color: ' + accent + ';' : 'color: var(--vp-texto); text-decoration: underline; text-decoration-color: ' + accent + '; text-decoration-thickness: 3px; text-underline-offset: 4px;';
+    // link usa a mesma regra do accentTexto: acento se tiver 4,5:1 com o fundo, senão cor de texto do tema sublinhada no acento
+    var linkVars = contBranco(accent) >= 4.5 ? '--lk: ' + accent + ';' : '--lk: var(--vp-texto); --lkc: ' + accent + '; --lkt: 3px; --lko: 4px;';
+    out.accent = accent; out.accentGrande = accentGrande; out.accentTexto = accentTexto; out.linkVars = linkVars;
+    var de = this.props.linhaDe == null ? 0 : this.props.linhaDe, ate = this.props.linhaAte == null ? 999 : this.props.linhaAte;
+    out.topoTxt = up(P.nome || 'Projeto') + ' · PRANCHA 4' + (de > 0 ? ' · CONTINUAÇÃO' : '');
+    out.refTxt = 'Referência em ' + (dataBr(d.ref && d.ref.data) || 'data a definir');
+
+    var H = d.hipoteses || [];
+    var lac = (d.lacunas || []).filter(function (l) { return norm(l.secao) === 'hipoteses'; });
+    function txtLac(x) { return x.o_que_falta + (has(x.depende_de) ? ' (depende de ' + x.depende_de + ')' : ''); }
+    out.temHip = H.length > 0; out.semHip = H.length === 0;
+    out.vazioHip = 'O projeto ainda não registra hipóteses.' + (lac.length ? ' Lacuna: ' + lac.map(txtLac).join(' · ') + '.' : ' Nenhuma lacuna registrada para esta seção: confirme se ela não se aplica.');
+    out.lacunas = lac.map(function (l) { return { falta: l.o_que_falta, depende: has(l.depende_de) ? l.depende_de : 'a definir' }; });
+    out.mostraLacunas = H.length > 0 && lac.length > 0 && ate >= H.length;
+
+    var cont = {}, ordem = [];
+    H.forEach(function (h) {
+      var k = has(h.situacao) ? String(h.situacao) : 'a definir';
+      if (cont[k] === undefined) { cont[k] = 0; ordem.push(k); }
+      cont[k] += 1;
+    });
+    out.situacoes = ordem.map(function (k) { return { rotulo: k, n: cont[k] }; });
+
+    var pend = 'font-size: 14px; line-height: 1.45; color: var(--vp-texto-suave); font-style: italic;', ok = 'font-size: 14px; line-height: 1.45; overflow-wrap: anywhere;';
+    function campo(v) { return has(v) ? { t: String(v), e: ok } : { t: 'a definir', e: pend }; }
+    out.linhas = H.map(function (h, i) {
+      var m = campo(h.metrica), r = campo(h.resultado_esperado), f = campo(h.ferramenta);
+      var sit = has(h.situacao), fonte = has(h.fonte) ? String(h.fonte) : '';
+      var url = /^https?:\/\//.test(fonte);
+      return {
+        id: has(h.id) ? h.id : '·', hipotese: h.hipotese,
+        metrica: m.t, metricaEstilo: m.e, resultado: r.t, resultadoEstilo: r.e, ferramenta: f.t, ferramentaEstilo: f.e,
+        situacao: sit ? h.situacao : 'a definir',
+        situacaoEstilo: 'font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 8px; border-radius: 8px; border: 1px ' + (sit ? 'solid var(--vp-texto); color: var(--vp-texto);' : 'dashed var(--vp-borda-forte); color: var(--vp-texto-suave);'),
+        fonteLink: url, fonteUrl: url ? fonte : '', fonteTexto: !url,
+        fonte: fonte ? 'Fonte: ' + fonte : 'Fonte a definir',
+        fonteEstilo: 'font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; color: ' + (fonte ? 'var(--vp-texto-suave)' : 'var(--vp-alerta)') + ';'
+      };
+    }).slice(de, ate);
+
+    var RF = (d.ref && d.ref.fontes) || [];
+    out.refFontes = RF.filter(function (f) { return has(f.rotulo) || has(f.url); }).map(function (f) {
+      var url = has(f.url) && /^https?:\/\//i.test(f.url) ? f.url : '';
+      return { rotulo: has(f.rotulo) ? f.rotulo : url, url: url, link: !!url, texto: !url };
+    });
+    out.semRefFontes = out.refFontes.length === 0;
+    return out;
+  }
+}
+</script>
+</body>
+</html>

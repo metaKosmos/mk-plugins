@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "vanta-produto/tokens.schema.json",
+  "title": "tokens.json (v1)",
+  "description": "Tokens visuais que os moldes leem por CSS variables (--vp-*). Tudo é opcional: o que faltar vem de skills/visual-de-projeto/tokens-padrao.json (neutro: system-ui, cinzas, acento #7C3AED).",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "cor": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+    "fonte": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "familia": { "type": "string", "minLength": 1, "description": "Valor de font-family, com fallback." },
+        "peso": { "type": "integer", "minimum": 100 },
+        "url": { "type": ["string", "null"], "pattern": "^(https://.*)?$", "description": "Folha de estilo que carrega a fonte (Google Fonts). Nulo: fonte do sistema." }
+      }
+    }
+  },
+  "properties": {
+    "versao": { "const": 1 },
+    "nome": { "type": ["string", "null"] },
+    "fontes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "titulo": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "familia": { "type": "string", "minLength": 1 },
+            "peso": { "type": "integer", "minimum": 100 },
+            "url": { "type": ["string", "null"], "pattern": "^(https://.*)?$" },
+            "caixa": { "enum": ["none", "uppercase"], "description": "uppercase põe títulos e nomes em caixa alta (o canvas preserva as palavras de marca da camada)." }
+          }
+        },
+        "corpo": { "$ref": "#/$defs/fonte" }
+      }
+    },
+    "cores": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fundo": { "$ref": "#/$defs/cor" },
+        "texto": { "$ref": "#/$defs/cor" },
+        "texto_suave": { "$ref": "#/$defs/cor" },
+        "borda": { "$ref": "#/$defs/cor" },
+        "borda_forte": { "type": "string", "minLength": 1, "description": "Qualquer cor CSS (usada em tracejados)." },
+        "superficie": { "$ref": "#/$defs/cor" },
+        "linha_leve": { "$ref": "#/$defs/cor" },
+        "apagado": { "$ref": "#/$defs/cor" },
+        "inverso": { "$ref": "#/$defs/cor", "description": "Texto sobre fundo escuro ou sobre acento forte." },
+        "alerta": { "$ref": "#/$defs/cor" },
+        "acento": { "$ref": "#/$defs/cor", "description": "Acento quando o projeto.json não traz um." }
+      }
+    },
+    "raio": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "card": { "type": "string", "pattern": "^\\d+(\\.\\d+)?(px|rem)$" },
+        "grande": { "type": "string", "pattern": "^\\d+(\\.\\d+)?(px|rem)$" }
+      }
+    },
+    "medidas": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Calibração do medidor de altura para a fonte de título. Largura média de um caractere como fração do corpo da fonte.",
+      "properties": {
+        "titulo_largura_char": { "type": "number", "minimum": 0.3 }
+      }
+    }
+  }
+}

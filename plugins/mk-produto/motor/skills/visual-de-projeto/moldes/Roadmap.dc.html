@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Projeto · roadmap</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<!--vp:tokens-->
+<style>
+body{margin:0;background:var(--vp-fundo)}
+a{color:var(--lk,var(--vp-acento));text-decoration-color:var(--lkc,currentColor);text-decoration-thickness:var(--lkt,auto);text-underline-offset:var(--lko,auto)}a:hover{color:var(--vp-texto)}
+</style>
+</helmet>
+<div style="width: 1440px; box-sizing: border-box; padding: 64px; background: var(--vp-fundo); color: var(--vp-texto); font-family: var(--vp-fonte-corpo); font-weight: var(--vp-corpo-peso); display: flex; flex-direction: column; gap: 100px; font-variant-numeric: tabular-nums; {{linkVars}}">
+
+  <div style="display: flex; justify-content: space-between; align-items: center; gap: 24px;">
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: none;">{{topoTxt}}</div>
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">{{refTxt}}</div>
+  </div>
+
+  <sc-if value="{{carregando}}" hint-placeholder-val="{{false}}">
+    <div style="border: 1px dashed var(--vp-borda); border-radius: var(--vp-raio-grande); padding: 48px; font-size: 18px; color: var(--vp-texto-suave);">Carregando dados do projeto…</div>
+  </sc-if>
+
+  <sc-if value="{{falhou}}" hint-placeholder-val="{{false}}">
+    <div style="border: 1px solid var(--vp-alerta); border-radius: var(--vp-raio-grande); padding: 48px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-alerta);">Dados do projeto indisponíveis</div>
+      <div style="font-size: 18px; line-height: 1.45;">O canvas não conseguiu ler dados/projeto.json. Republique o arquivo e recarregue a página.</div>
+      <div style="font-size: 13px; color: var(--vp-texto-suave);">Detalhe técnico: {{erroMsg}}</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{pronto}}" hint-placeholder-val="{{true}}">
+
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">Roadmap</div>
+      <h1 style="margin: 0; font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 96px; line-height: 0.95; text-transform: var(--vp-titulo-caixa);">Do plano <span style="{{accentGrande}}">à entrega</span></h1>
+    </div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <sc-for list="{{numeros}}" as="n" hint-placeholder-count="3">
+        <div style="{{n.card}}"><span style="{{n.valorEstilo}}">{{n.valor}}</span><span style="{{n.rotuloEstilo}}">{{n.rotulo}}</span></div>
+      </sc-for>
+    </div>
+  </div>
+
+  <sc-if value="{{temItens}}" hint-placeholder-val="{{true}}">
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 13px; color: var(--vp-texto-suave); align-items: center;">
+      <span style="display: inline-flex; align-items: center; gap: 8px;"><i style="width: 28px; height: 12px; border-radius: 9999px; background: {{accent}};"></i>dias úteis da etapa</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px;"><i style="width: 28px; height: 0; border-top: 2px solid var(--vp-texto);"></i>trava: só começa quando a outra termina</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px;"><i style="width: 28px; height: 0; border-top: 2px solid var(--vp-alerta);"></i>trava desrespeitada</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px;"><i style="width: 11px; height: 11px; transform: rotate(45deg); background: var(--vp-texto);"></i>entrega</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px;"><i style="width: 2px; height: 16px; background: var(--vp-alerta);"></i>referência do plano</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px;"><i style="width: 2px; height: 16px; background: {{accent}};"></i>marco</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px;"><i style="width: 12px; height: 16px; background: var(--vp-linha-leve);"></i>feriado</span>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 13px; color: var(--vp-texto-suave);">
+      <span>Arraste a borda de uma barra para mudar início ou fim, e o meio para mover a etapa inteira. O ajuste vale só nesta tela e não altera o plano. Trava desrespeitada fica vermelha.</span>
+      <sc-if value="{{hasOv}}" hint-placeholder-val="{{false}}">
+        <span style="font-weight: 700; color: var(--vp-texto);">{{ovLabel}}</span>
+        <button type="button" onClick="{{reset}}" style="font: inherit; font-size: 13px; font-weight: 700; border: 1px solid var(--vp-texto); background: var(--vp-fundo); color: var(--vp-texto); border-radius: 9999px; padding: 8px 16px; cursor: pointer;">Voltar ao plano</button>
+      </sc-if>
+    </div>
+
+    <div style="border: 1px solid var(--vp-borda); border-radius: var(--vp-raio-grande); overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 380px minmax(0, 1fr); border-bottom: 1px solid var(--vp-borda);">
+        <div style="padding: 16px 20px; font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--vp-texto-suave); border-right: 1px solid var(--vp-borda);">Etapa · dias úteis</div>
+        <div style="position: relative; height: 64px;">
+          <sc-for list="{{semanas}}" as="w" hint-placeholder-count="9">
+            <div style="{{w.linha}}"></div>
+            <div style="{{w.rotulo}}">{{w.l}}</div>
+          </sc-for>
+          <sc-for list="{{marcas}}" as="m" hint-placeholder-count="3">
+            <div style="{{m.linha}}"></div>
+            <div style="{{m.tag}}">{{m.l}}</div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="position: relative;">
+        <sc-for list="{{linhas}}" as="r" hint-placeholder-count="8">
+          <sc-if value="{{r.isHead}}" hint-placeholder-val="{{false}}">
+            <div style="display: grid; grid-template-columns: 380px minmax(0, 1fr); height: 48px; background: var(--vp-superficie); border-bottom: 1px solid var(--vp-borda); box-sizing: border-box;">
+              <div style="padding: 0 20px; display: flex; align-items: center; gap: 10px; border-right: 1px solid var(--vp-borda); min-width: 0;"><span style="{{r.ponto}}"></span><span style="font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 20px; text-transform: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.nome}}</span></div>
+              <div style="position: relative;"><sc-for list="{{semanas}}" as="w" hint-placeholder-count="9"><div style="{{w.linha}}"></div></sc-for></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{r.isRow}}" hint-placeholder-val="{{true}}">
+            <div style="display: grid; grid-template-columns: 380px minmax(0, 1fr); height: 88px; border-bottom: 1px solid var(--vp-linha-leve); box-sizing: border-box;">
+              <div style="padding: 0 20px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; border-right: 1px solid var(--vp-borda); min-width: 0;">
+                <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                  <span style="font-size: 15px; font-weight: 700; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{r.nome}}">{{r.nome}}</span>
+                  <span style="font-size: 12px; line-height: 1.35; color: var(--vp-texto-suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{r.descricao}}">{{r.descricao}}</span>
+                  <sc-if value="{{r.fora}}" hint-placeholder-val="{{false}}"><span style="align-self: flex-start; margin-top: 2px; font-size: 10px; font-weight: 800; letter-spacing: .06em; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--vp-alerta); color: var(--vp-alerta);">FORA DA JANELA DO ROADMAP</span></sc-if>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
+                  <span style="font-size: 13px; font-weight: 700;">{{r.dias}}</span>
+                  <span style="font-size: 12px; color: var(--vp-texto-suave);">{{r.id}}</span>
+                </div>
+              </div>
+              <div style="position: relative;">
+                <sc-for list="{{semanas}}" as="w" hint-placeholder-count="9"><div style="{{w.linha}}"></div></sc-for>
+                <sc-for list="{{feriadosBg}}" as="fb" hint-placeholder-count="2"><div style="{{fb.estilo}}"></div></sc-for>
+                <sc-for list="{{marcas}}" as="m" hint-placeholder-count="3"><div style="{{m.linha}}"></div></sc-for>
+                <button type="button" style="{{r.barra}}" onPointerDown="{{r.dCorpo}}" aria-label="{{r.aCorpo}}" title="{{r.aCorpo}}">{{r.barraTxt}}</button>
+                <span style="{{r.rotuloFora}}">{{r.barraFora}}</span>
+                <button type="button" style="{{r.hE}}" onPointerDown="{{r.dEsq}}" aria-label="{{r.aEsq}}" title="{{r.aEsq}}"></button>
+                <button type="button" style="{{r.hD}}" onPointerDown="{{r.dDir}}" aria-label="{{r.aDir}}" title="{{r.aDir}}"></button>
+                <sc-for list="{{r.entregas}}" as="g" hint-placeholder-count="0">
+                  <div style="{{g.ponto}}" title="{{g.t}}"></div>
+                  <div style="{{g.rotulo}}">{{g.l}}</div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </sc-for>
+        <div style="position: absolute; top: 0; bottom: 0; left: 380px; right: 0; pointer-events: none; z-index: 4;">
+          <svg width="100%" height="100%" viewBox="{{svgBox}}" preserveAspectRatio="none" aria-hidden="true" style="display: block; overflow: visible;">
+            <sc-for list="{{ligacoes}}" as="k" hint-placeholder-count="0">
+              <path d="{{k.d}}" fill="none" stroke="{{k.cor}}" stroke-width="1.75" vector-effect="non-scaling-stroke"></path>
+            </sc-for>
+          </svg>
+          <sc-for list="{{ligacoes}}" as="k" hint-placeholder-count="0">
+            <div style="{{k.ponto}}" title="{{k.t}}"></div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    <p style="margin: 0; font-size: 13px; line-height: 1.5; color: var(--vp-texto-suave); max-width: 1100px;">{{notaGantt}}</p>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{semItens}}" hint-placeholder-val="{{false}}">
+    <div style="border: 1px dashed var(--vp-borda-forte); border-radius: var(--vp-raio-grande); padding: 48px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">Sem etapas registradas</div>
+      <div style="font-size: 20px; line-height: 1.45; max-width: 1000px;">{{vazioRoadmap}}</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{rodape}}" hint-placeholder-val="{{true}}">
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start;">
+
+    <div style="background: var(--vp-superficie); border: 1px solid var(--vp-borda); border-radius: var(--vp-raio-grande); padding: 32px; display: flex; flex-direction: column; gap: 16px;">
+      <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">Marcos</span>
+      <sc-for list="{{marcosLista}}" as="m" hint-placeholder-count="3">
+        <div style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; align-items: baseline;">
+          <span style="{{m.dataEstilo}}">{{m.data}}</span>
+          <span style="font-size: 15px; font-weight: 700; line-height: 1.35;">{{m.rotulo}}</span>
+        </div>
+      </sc-for>
+      <sc-if value="{{semMarcos}}" hint-placeholder-val="{{false}}"><span style="font-size: 14px; line-height: 1.45; color: var(--vp-texto-suave);">Sem marcos registrados.</span></sc-if>
+    </div>
+
+    <div style="border: 1px solid var(--vp-borda); border-radius: var(--vp-raio-grande); padding: 32px; display: flex; flex-direction: column; gap: 16px;">
+      <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">Entregas</span>
+      <sc-for list="{{entregasLista}}" as="g" hint-placeholder-count="3">
+        <div style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; align-items: baseline;">
+          <span style="font-size: 13px; font-weight: 700; color: var(--vp-texto-suave);">{{g.data}}</span>
+          <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 700; line-height: 1.35;">{{g.texto}}</span><span style="font-size: 12px; color: var(--vp-texto-suave);">{{g.item}}</span></div>
+        </div>
+      </sc-for>
+      <sc-if value="{{semEntregas}}" hint-placeholder-val="{{false}}"><span style="font-size: 14px; line-height: 1.45; color: var(--vp-texto-suave);">Sem entregas externas registradas.</span></sc-if>
+    </div>
+
+    <div style="border: 1px dashed var(--vp-borda-forte); border-radius: var(--vp-raio-grande); padding: 32px; display: flex; flex-direction: column; gap: 16px;">
+      <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; {{accentTexto}}">Dependências</span>
+      <sc-for list="{{depsLista}}" as="p" hint-placeholder-count="3">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="{{p.estilo}}">{{p.de}} → {{p.para}}</span>
+          <span style="font-size: 13px; line-height: 1.4; color: var(--vp-texto-suave);">{{p.trava}}</span>
+        </div>
+      </sc-for>
+      <sc-if value="{{semDeps}}" hint-placeholder-val="{{false}}"><span style="font-size: 14px; line-height: 1.45; color: var(--vp-texto-suave);">Sem dependências registradas.</span></sc-if>
+    </div>
+
+  </div>
+  </sc-if>
+
+  <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--vp-borda); padding-top: 16px;">
+    <div style="display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; line-height: 1.5; color: var(--vp-texto-suave);">
+      <span style="font-weight: 700; color: var(--vp-texto);">Fontes:</span>
+      <sc-for list="{{refFontes}}" as="f" hint-placeholder-count="2">
+        <sc-if value="{{f.link}}" hint-placeholder-val="{{false}}"><a href="{{f.url}}">{{f.rotulo}}</a></sc-if>
+        <sc-if value="{{f.texto}}" hint-placeholder-val="{{true}}"><span>{{f.rotulo}}</span></sc-if>
+      </sc-for>
+      <sc-if value="{{semRefFontes}}" hint-placeholder-val="{{false}}"><span>nenhuma fonte registrada no projeto.json</span></sc-if>
+    </div>
+    <div style="font-size: 12px; line-height: 1.5; color: var(--vp-texto-suave);">{{refTxt}}. Dias úteis descontam fins de semana e os feriados do projeto. Conteúdo lido de dados/projeto.json.</div>
+  </div>
+
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"","options":["__VP_OPCOES__"]},"trilhaDe":{"editor":"int","default":0,"min":0,"max":99},"trilhaAte":{"editor":"int","default":999,"min":0,"max":999},"$preview":{"width":1440,"height":2400}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = { d: null, erro: null, ov: {} };
+    this.drag = null;
+    this._pos = {};
+    this.mv = (e) => {
+      const dr = this.drag;
+      if (!dr) return;
+      const dtDias = (e.clientX - dr.x0) / dr.w * dr.spanDias;
+      const WD = dr.WD, DAY = 86400000, topo = WD.length - 1;
+      const idx = (t) => { for (let i = 0; i <= topo; i++) { if (WD[i] + DAY > t) return i; } return topo; };
+      const ov = Object.assign({}, this.state.ov);
+      let si = dr.si, n = dr.n;
+      if (dr.kind === 'corpo') { si = Math.max(0, idx(WD[dr.si] + (dtDias + 0.5) * DAY)); }
+      else if (dr.kind === 'esq') { si = Math.min(Math.max(0, idx(WD[dr.si] + (dtDias + 0.5) * DAY)), dr.si + dr.n - 1); n = dr.si + dr.n - si; }
+      else { const ei = idx(WD[dr.si + dr.n - 1] + (dtDias + 0.5) * DAY); n = Math.max(1, ei - dr.si + 1); }
+      ov[dr.id] = { si: si, n: n };
+      this.setState({ ov: ov });
+    };
+    this.up = () => {
+      this.drag = null;
+      window.removeEventListener('pointermove', this.mv);
+      window.removeEventListener('pointerup', this.up);
+    };
+  }
+  componentDidMount() {
+    var self = this;
+    fetch('dados/projeto.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) { self.setState({ d: d, erro: null }); })
+      .catch(function (e) { self.setState({ erro: String((e && e.message) || e) }); });
+  }
+  componentWillUnmount() { this.up(); }
+  startDrag(id, kind, e) {
+    const p = this._pos[id];
+    if (!p) return;
+    e.preventDefault();
+    const btn = e.currentTarget, track = btn && btn.parentElement;
+    const w = track ? track.getBoundingClientRect().width : 900;
+    this.drag = { id: id, kind: kind, x0: e.clientX, w: w || 900, si: p.si, n: p.n, WD: this._WD, spanDias: this._spanDias };
+    window.addEventListener('pointermove', this.mv);
+    window.addEventListener('pointerup', this.up);
+  }
+  renderVals() {
+    var VP = /*vp:config*/{"caixa":"none","preservar":[],"marca":"","cores":{"fundo":"#ffffff","acento":"#7c3aed"}}/*vp:fim*/;
+    var ROTULO = (VP.marca ? VP.marca + ' ' : '') + 'PROJETO';
+    var self = this, d = this.state.d, erro = this.state.erro, ov = this.state.ov || {};
+    function norm(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z_]/g, ''); }
+    function up(s) { var t = String(s == null ? '' : s); if (VP.caixa !== 'uppercase') return t; t = t.toUpperCase(); VP.preservar.forEach(function (w) { var re = new RegExp('(^|[^A-Za-z0-9])' + w.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![a-z])', 'g'); t = t.replace(re, function (m, a) { return a + w; }); }); return t; }
+    function has(s) { return s !== null && s !== undefined && String(s).trim() !== ''; }
+    function dataBr(s) { if (!/^\d{4}-\d{2}-\d{2}$/.test(s || '')) return null; var p = s.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+    var pronto = !!d;
+    var out = { carregando: !d && !erro, falhou: !d && !!erro, pronto: pronto, erroMsg: erro || '', hasOv: false, ovLabel: '', reset: function () { self.setState({ ov: {} }); } };
+    if (!pronto) { out.accent = VP.cores.acento; out.accentGrande = 'color: ' + VP.cores.acento + ';'; out.accentTexto = 'color: ' + VP.cores.acento + ';'; out.linkVars = ''; out.topoTxt = ROTULO + ' · PRANCHA 3'; out.refTxt = ''; return out; }
+    var P = d.projeto || {};
+    var accent = (this.props.accent && /^#[0-9a-fA-F]{6}$/.test(this.props.accent)) ? this.props.accent : ((P.acento && /^#[0-9a-fA-F]{6}$/.test(P.acento)) ? P.acento : VP.cores.acento);
+    function lumC(h) { var v = [1, 3, 5].map(function (k) { var c = parseInt(h.substr(k, 2), 16) / 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; }
+    function contBranco(h) { var a = lumC(VP.cores.fundo) + 0.05, b = lumC(h) + 0.05; return a > b ? a / b : b / a; }
+    // acento claro (ex.: um azul claro) não serve de cor de texto sobre o fundo: o texto vira a cor de texto do tema e o acento vira realce
+    function corTexto(h, min) { return contBranco(h) >= min ? h : 'var(--vp-texto)'; }
+    function textoSobre(fundo) { return contBranco(fundo) >= 4.5 ? 'var(--vp-inverso)' : 'var(--vp-texto)'; }
+    var accentGrande = contBranco(accent) >= 3 ? 'color: ' + accent + ';' : 'color: var(--vp-texto); background: linear-gradient(transparent 58%, ' + accent + ' 58%);';
+    var accentTexto = contBranco(accent) >= 4.5 ? 'color: ' + accent + ';' : 'color: var(--vp-texto); text-decoration: underline; text-decoration-color: ' + accent + '; text-decoration-thickness: 3px; text-underline-offset: 4px;';
+    // link usa a mesma regra do accentTexto: acento se tiver 4,5:1 com o fundo, senão cor de texto do tema sublinhada no acento
+    var linkVars = contBranco(accent) >= 4.5 ? '--lk: ' + accent + ';' : '--lk: var(--vp-texto); --lkc: ' + accent + '; --lkt: 3px; --lko: 4px;';
+    out.accent = accent; out.accentGrande = accentGrande; out.accentTexto = accentTexto; out.linkVars = linkVars;
+    var tDe = this.props.trilhaDe == null ? 0 : this.props.trilhaDe, tAte = this.props.trilhaAte == null ? 999 : this.props.trilhaAte;
+    out.topoTxt = up(P.nome || 'Projeto') + ' · PRANCHA 3' + (tDe > 0 ? ' · CONTINUAÇÃO' : '');
+    out.refTxt = 'Referência em ' + (dataBr(d.ref && d.ref.data) || 'data a definir');
+
+    var DAY = 86400000;
+    function ts(s) { var p = String(s).split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
+    function iso(t) { var q = new Date(t); return q.getUTCFullYear() + '-' + ('0' + (q.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + q.getUTCDate()).slice(-2); }
+    function br(t) { var q = new Date(t); return ('0' + q.getUTCDate()).slice(-2) + '/' + ('0' + (q.getUTCMonth() + 1)).slice(-2); }
+    function okData(s) { return /^\d{4}-\d{2}-\d{2}$/.test(s || ''); }
+
+    var R = d.roadmap || {};
+    var trilhasAll = R.trilhas || [], itensAll = (R.itens || []).filter(function (i) { return okData(i.inicio); });
+    var deps = R.dependencias || [], marcosAll = R.marcos || [], HOL = {};
+    (R.feriados || []).forEach(function (f) { if (okData(f)) HOL[f] = 1; });
+    var lac = (d.lacunas || []).filter(function (l) { return norm(l.secao) === 'roadmap'; });
+    out.temItens = itensAll.length > 0; out.semItens = itensAll.length === 0;
+    out.vazioRoadmap = 'O projeto ainda não registra etapas com início e fim.' + (marcosAll.length ? ' Os marcos com data aparecem abaixo.' : '') + (lac.length ? ' Lacuna: ' + lac.map(function (x) { return x.o_que_falta + (has(x.depende_de) ? ' (depende de ' + x.depende_de + ')' : ''); }).join(' · ') + '.' : ' Nenhuma lacuna registrada para esta seção: confirme se ela não se aplica.');
+
+    var RF = (d.ref && d.ref.fontes) || [];
+    out.refFontes = RF.filter(function (f) { return has(f.rotulo) || has(f.url); }).map(function (f) {
+      var url = has(f.url) && /^https?:\/\//i.test(f.url) ? f.url : '';
+      return { rotulo: has(f.rotulo) ? f.rotulo : url, url: url, link: !!url, texto: !url };
+    });
+    out.semRefFontes = out.refFontes.length === 0;
+
+    var ultimaParte = tAte >= trilhasAll.length;
+    out.rodape = itensAll.length > 0 && ultimaParte;
+    out.semanas = []; out.marcas = []; out.feriadosBg = []; out.linhas = []; out.ligacoes = []; out.svgBox = '0 0 1000 100'; out.notaGantt = '';
+    out.numeros = []; out.marcosLista = []; out.entregasLista = []; out.depsLista = [];
+    out.semMarcos = true; out.semEntregas = true; out.semDeps = true;
+    // marcos vêm antes da saída antecipada: roadmap sem itens ainda mostra os marcos do projeto
+    out.marcosLista = marcosAll.filter(function (m) { return okData(m.data); }).sort(function (a, b) { return a.data < b.data ? -1 : 1; }).map(function (m) {
+      return { data: dataBr(m.data), rotulo: m.rotulo, dataEstilo: "font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 20px; line-height: 1.2; color: " + corTexto((m.cor && /^#[0-9a-fA-F]{6}$/.test(m.cor)) ? m.cor : accent, 4.5) + ';' };
+    });
+    out.semMarcos = out.marcosLista.length === 0;
+    if (!itensAll.length) { out.rodape = out.marcosLista.length > 0; return out; }
+
+    // janela
+    var J = R.janela || {};
+    var T0, T1;
+    if (okData(J.inicio) && okData(J.fim)) { T0 = ts(J.inicio); T1 = ts(J.fim) + DAY; }
+    else {
+      var mn = Infinity, mx = 0;
+      itensAll.forEach(function (i) { var t = ts(i.inicio); if (t < mn) mn = t; if (t + (i.dias || 1) * 1.5 * DAY > mx) mx = t + (i.dias || 1) * 1.5 * DAY; });
+      T0 = mn; T1 = mx + 7 * DAY;
+    }
+    var SPAN = T1 - T0, spanDias = SPAN / DAY;
+    function pct(t) { return (t - T0) / SPAN * 100; }
+    function pc(t) { return Math.max(0, Math.min(100, pct(t))); }
+
+    // dias úteis
+    var WD = [];
+    for (var t = T0 - 120 * DAY; t < T1 + 400 * DAY; t += DAY) { var wd = new Date(t).getUTCDay(); if (wd !== 0 && wd !== 6 && !HOL[iso(t)]) WD.push(t); }
+    function idxDe(tt) { for (var i = 0; i < WD.length; i++) { if (WD[i] >= tt) return i; } return WD.length - 1; }
+
+    // semanas e rótulos
+    var nSem = Math.ceil(spanDias / 7), passo = nSem <= 13 ? 1 : (nSem <= 26 ? 2 : 4);
+    for (var w = 0; w < nSem; w++) {
+      var a = T0 + w * 7 * DAY;
+      out.semanas.push({
+        l: (w % passo === 0) ? br(a) : '',
+        linha: 'position:absolute;top:0;bottom:0;left:' + pct(a) + '%;border-left:1px solid var(--vp-linha-leve);pointer-events:none;',
+        rotulo: 'position:absolute;top:24px;left:calc(' + pct(a) + '% + 8px);font-size:12px;font-weight:700;color:var(--vp-texto-suave);'
+      });
+    }
+    Object.keys(HOL).forEach(function (f) {
+      var tf = ts(f);
+      if (tf >= T0 && tf < T1) out.feriadosBg.push({ estilo: 'position:absolute;top:0;bottom:0;left:' + pct(tf) + '%;width:' + (DAY / SPAN * 100) + '%;background:var(--vp-superficie);pointer-events:none;' });
+    });
+    var M = [];
+    var refT = okData(d.ref && d.ref.data) ? ts(d.ref.data) : null;
+    if (refT !== null && refT >= T0 && refT < T1) M.push([refT, 'ref', 'var(--vp-alerta)']);
+    marcosAll.forEach(function (m) { if (okData(m.data)) { var tm = ts(m.data); if (tm >= T0 && tm < T1) M.push([tm, m.rotulo, (m.cor && /^#[0-9a-fA-F]{6}$/.test(m.cor)) ? m.cor : accent]); } });
+    out.marcas = M.map(function (m, i) {
+      var x = pct(m[0] + DAY / 2);
+      return {
+        l: m[1],
+        linha: 'position:absolute;top:0;bottom:0;left:' + x + '%;border-left:2px solid ' + m[2] + ';pointer-events:none;z-index:2;',
+        tag: 'position:absolute;top:' + (i % 2 ? 44 : 4) + 'px;' + (x > 88 ? 'right:calc(' + (100 - x) + '% + 4px);' : 'left:calc(' + x + '% + 4px);') + 'font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:none;color:' + m[2] + ';z-index:2;white-space:nowrap;'
+      };
+    });
+
+    // trilhas visíveis
+    var trilhas = trilhasAll.slice(tDe, tAte), idsVis = {};
+    trilhas.forEach(function (tr) { idsVis[tr.id] = tr; });
+    var cursor = {}, pos = {}, ypos = {}, y = 0, nBarras = 0, foraN = 0;
+    var CAP = {};
+    out.linhas = [];
+    trilhas.forEach(function (tr) {
+      var cor = (tr.cor && /^#[0-9a-fA-F]{6}$/.test(tr.cor)) ? tr.cor : accent;
+      out.linhas.push({ isHead: true, isRow: false, nome: up(tr.nome), ponto: 'width:12px;height:12px;flex:none;border-radius:9999px;background:' + cor + ';' });
+      y += 48;
+      itensAll.filter(function (i) { return i.trilha === tr.id; }).forEach(function (it) {
+        var base = idxDe(ts(it.inicio)), n0 = Math.max(1, Math.ceil(it.dias || 1));
+        var o = ov[it.id], si = o ? o.si : base, n = o ? o.n : n0;
+        var s0 = WD[si], e0 = WD[si + n - 1] + DAY;
+        pos[it.id] = { si: si, n: n, s0: s0, e0: e0 };
+        self._pos[it.id] = { si: si, n: n };
+        var x0 = pc(s0), x1 = pc(e0), wpct = Math.max(1.2, x1 - x0);
+        var larga = wpct > 9, aj = !!o;
+        var fora = s0 < T0 || e0 > T1 + 0.5 * DAY; if (fora) foraN += 1;
+        var barra = 'position:absolute;top:30px;height:28px;border-radius:9999px;left:' + x0 + '%;width:' + wpct + '%;display:flex;align-items:center;padding:0 10px;box-sizing:border-box;font-family:inherit;font-size:11px;font-weight:800;letter-spacing:.04em;white-space:nowrap;overflow:hidden;z-index:5;cursor:grab;touch-action:none;border:' + (aj ? '2px solid var(--vp-texto)' : 'none') + ';background:' + cor0(tr) + ';color:' + textoSobre(cor0(tr)) + ';';
+        var entregas = (it.entregas || []).filter(function (g) { return okData(g.data); }).map(function (g) {
+          var x = pct(ts(g.data) + DAY / 2);
+          return {
+            t: br(ts(g.data)) + ' · ' + g.texto, l: br(ts(g.data)) + ' ' + g.texto,
+            ponto: 'position:absolute;top:38px;left:calc(' + x + '% - 6px);width:11px;height:11px;transform:rotate(45deg);background:var(--vp-texto);border:2px solid var(--vp-inverso);z-index:3;',
+            rotulo: 'position:absolute;top:64px;left:calc(' + x + '% - 4px);max-width:170px;overflow:hidden;text-overflow:ellipsis;font-size:10px;font-weight:700;color:var(--vp-texto);white-space:nowrap;z-index:3;'
+          };
+        });
+        nBarras += 1;
+        ypos[it.id] = y + 44;
+        var nm = it.nome;
+        out.linhas.push({
+          isHead: false, isRow: true, id: it.id, nome: nm, descricao: has(it.descricao) ? it.descricao : '', fora: fora,
+          dias: n + (n === 1 ? ' dia útil' : ' dias úteis') + (aj ? ' · ajustado' : ''),
+          barra: barra, barraTxt: larga ? br(s0) + ' a ' + br(e0 - DAY) : '',
+          barraFora: larga ? '' : br(s0) + ' a ' + br(e0 - DAY),
+          rotuloFora: larga ? 'display:none;' : 'position:absolute;top:35px;left:calc(' + Math.min(x1, 86) + '% + 8px);font-size:11px;font-weight:700;color:var(--vp-texto);white-space:nowrap;z-index:5;',
+          hE: 'position:absolute;top:26px;height:36px;width:12px;left:calc(' + x0 + '% - 6px);border:none;padding:0;background:transparent;cursor:ew-resize;touch-action:none;z-index:6;',
+          hD: 'position:absolute;top:26px;height:36px;width:12px;left:calc(' + x1 + '% - 6px);border:none;padding:0;background:transparent;cursor:ew-resize;touch-action:none;z-index:6;',
+          aCorpo: 'Mover ' + nm, aEsq: 'Ajustar o início de ' + nm, aDir: 'Ajustar o fim de ' + nm,
+          dCorpo: (function (k) { return function (e) { self.startDrag(k, 'corpo', e); }; })(it.id),
+          dEsq: (function (k) { return function (e) { self.startDrag(k, 'esq', e); }; })(it.id),
+          dDir: (function (k) { return function (e) { self.startDrag(k, 'dir', e); }; })(it.id),
+          entregas: entregas
+        });
+        y += 88;
+      });
+    });
+    function cor0(tr) { return (tr.cor && /^#[0-9a-fA-F]{6}$/.test(tr.cor)) ? tr.cor : accent; }
+
+    // ligações
+    out.ligacoes = [];
+    deps.forEach(function (dp) {
+      var a = pos[dp.de], b = pos[dp.para];
+      if (!a || !b) return;
+      var conf = b.s0 < a.e0 - 0.5 * DAY;
+      var x1 = pct(a.e0) * 10, x2 = pct(b.s0) * 10, y1 = ypos[dp.de], y2 = ypos[dp.para];
+      var col = conf ? 'var(--vp-alerta)' : 'var(--vp-texto)';
+      var path = 'M' + x1 + ' ' + y1 + ' H' + (x1 + 6) + ' V' + y2 + ' H' + x2;
+      var nomeDe = (itensAll.filter(function (i) { return i.id === dp.de; })[0] || {}).nome || dp.de, nomePara = (itensAll.filter(function (i) { return i.id === dp.para; })[0] || {}).nome || dp.para;
+      out.ligacoes.push({ d: path, cor: col, t: (conf ? 'TRAVA DESRESPEITADA · ' : '') + nomeDe + ' → ' + nomePara + (has(dp.trava) ? ' · ' + dp.trava : ''),
+        ponto: 'position:absolute;width:9px;height:9px;border-radius:9999px;box-sizing:border-box;left:calc(' + (x2 / 10) + '% - 4.5px);top:' + (y2 - 4.5) + 'px;background:' + col + ';border:2px solid var(--vp-inverso);pointer-events:auto;' });
+    });
+    out.svgBox = '0 0 1000 ' + Math.max(y, 1);
+    this._WD = WD; this._spanDias = spanDias;
+
+    var nOv = Object.keys(ov).length;
+    out.hasOv = nOv > 0; out.ovLabel = nOv + (nOv === 1 ? ' etapa ajustada' : ' etapas ajustadas') + ', só nesta tela';
+    out.notaGantt = 'Cada barra cobre os dias úteis da etapa, a partir da data de início do plano. As trilhas correm juntas e só se cruzam onde há linha.' + (foraN ? ' ' + foraN + (foraN === 1 ? ' etapa passa' : ' etapas passam') + ' do limite da janela e aparecem cortadas.' : '');
+
+    // números do cabeçalho
+    var nTr = trilhasAll.length, nIt = itensAll.length;
+    var cardN = 'border: 1px solid var(--vp-borda); border-radius: var(--vp-raio); padding: 12px 18px; display: flex; flex-direction: column; gap: 2px;';
+    var vN = "font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 36px; line-height: 1;", rN = 'font-size: 12px; color: var(--vp-texto-suave);';
+    var primeiro = Infinity, ultimo = 0;
+    itensAll.forEach(function (i) { var b = idxDe(ts(i.inicio)); var s = WD[b], e = WD[b + Math.max(1, Math.ceil(i.dias || 1)) - 1] + DAY; if (s < primeiro) primeiro = s; if (e > ultimo) ultimo = e; });
+    out.numeros = [
+      { valor: String(nIt), rotulo: nIt === 1 ? 'etapa' : 'etapas', card: cardN, valorEstilo: vN, rotuloEstilo: rN },
+      { valor: String(nTr), rotulo: nTr === 1 ? 'trilha' : 'trilhas', card: cardN, valorEstilo: vN, rotuloEstilo: rN },
+      { valor: br(primeiro) + ' a ' + br(ultimo - DAY), rotulo: 'primeira à última etapa', card: 'background: var(--vp-texto); border-radius: var(--vp-raio); padding: 12px 18px; display: flex; flex-direction: column; gap: 2px;', valorEstilo: vN + ' color: var(--vp-inverso);', rotuloEstilo: 'font-size: 12px; color: var(--vp-apagado);' }
+    ];
+
+    // listas de rodapé (sempre do projeto inteiro)
+    var ent = [];
+    itensAll.forEach(function (i) { (i.entregas || []).forEach(function (g) { if (okData(g.data)) ent.push({ data: g.data, texto: g.texto, item: i.nome }); }); });
+    ent.sort(function (a, b) { return a.data < b.data ? -1 : 1; });
+    out.entregasLista = ent.map(function (g) { return { data: dataBr(g.data), texto: g.texto, item: g.item }; });
+    out.semEntregas = ent.length === 0;
+    out.depsLista = deps.map(function (dp) {
+      var a = pos[dp.de], b = pos[dp.para];
+      var nomeDe = (itensAll.filter(function (i) { return i.id === dp.de; })[0] || {}).nome || dp.de, nomePara = (itensAll.filter(function (i) { return i.id === dp.para; })[0] || {}).nome || dp.para;
+      var conf = a && b && b.s0 < a.e0 - 0.5 * DAY;
+      return { de: nomeDe, para: nomePara, trava: (conf ? 'Trava desrespeitada neste plano. ' : '') + (has(dp.trava) ? dp.trava : 'trava a definir'), estilo: 'font-size: 15px; font-weight: 700; line-height: 1.35; color: ' + (conf ? 'var(--vp-alerta)' : 'var(--vp-texto)') + ';' };
+    });
+    out.semDeps = deps.length === 0;
+    return out;
+  }
+}
+</script>
+</body>
+</html>

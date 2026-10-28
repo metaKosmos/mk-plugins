@@ -1,0 +1,86 @@
+{
+  "versao": 1,
+  "empresa": {
+    "nome": "Fábrica Exemplo",
+    "rotulo_canvas": "fX"
+  },
+  "escrita": {
+    "travessao_proibido": true,
+    "idioma": "pt-BR",
+    "regras": "Português brasileiro com diacríticos, sem traço longo nem meia-risca, sem emoji."
+  },
+  "marca": {
+    "regra_texto": "A marca é \"fX\" (f minúsculo, X maiúsculo), nunca \"FX\", \"Fx\" ou \"fx\". Produtos: \"fX Loja\", \"fX Loja+\" e \"fX Pagamentos\".",
+    "preservar_caixa": ["fX"],
+    "reprovar": [
+      {
+        "padrao": "{{ANTES}}(FX|Fx|fx)(?![\\w/.@-])",
+        "mensagem": "marca escrita \"FX\", \"Fx\" ou \"fx\". A grafia é \"fX\""
+      }
+    ],
+    "normalizar": [
+      {
+        "padrao": "{{ANTES}}f\\s?x\\s?loja\\s?\\+",
+        "ignorar_caixa": true,
+        "para": "fX Loja+",
+        "aceitar": ["fX Loja+"]
+      },
+      {
+        "padrao": "{{ANTES}}f\\s?x\\s?loja(?!\\s?\\+)",
+        "ignorar_caixa": true,
+        "para": "fX Loja",
+        "aceitar": ["fX Loja"]
+      },
+      {
+        "padrao": "{{ANTES}}f\\s?x\\s?pagamentos",
+        "ignorar_caixa": true,
+        "para": "fX Pagamentos",
+        "aceitar": ["fX Pagamentos"]
+      }
+    ]
+  },
+  "areas": [
+    { "nome": "Dados", "cor": "#0EA5E9", "padrao": "^\\s*dados\\s*:", "vence_no_prefixo": true },
+    { "nome": "fX Loja", "cor": "#2563EB", "padrao": "{{ANTES}}f\\s?x\\s?loja" },
+    { "nome": "fX Pagamentos", "cor": "#059669", "padrao": "{{ANTES}}f\\s?x\\s?pagamentos" }
+  ],
+  "acento_padrao": "#7C3AED",
+  "fontes": {
+    "linear": {
+      "habilitada": true,
+      "servidor": "mcp__linear-exemplo__",
+      "proibido": ["mcp__linear-outra-empresa__", "mcp__claude_ai_Linear__"],
+      "como": "Só o servidor da empresa. Servidor não autenticado: pare nesta fonte e diga para renovar o acesso."
+    },
+    "granola": { "habilitada": true, "servidor": "mcp__claude_ai_Granola__" },
+    "slack": { "habilitada": true, "servidor": "mcp__claude_ai_Slack__" },
+    "drive": {
+      "habilitada": true,
+      "cli": "gws",
+      "conta_dominio": "exemplo.com.br",
+      "servidor": "mcp__claude_ai_Google_Drive__"
+    },
+    "locais": {
+      "habilitada": true,
+      "pastas": [],
+      "marcadores": ["decisions/", "sessions/", "context/", "projects/"]
+    }
+  },
+  "gestor": {
+    "servidor": "mcp__linear-exemplo__",
+    "time": "Time Exemplo",
+    "estado_inicial": "Backlog",
+    "escada_pontos": [1, 2, 3, 5, 8],
+    "teto_pontos": 5,
+    "contrato_campos": ["Modo", "Fluxo", "Repos", "Pode mexer em", "Resultado", "O que entrega", "Teste principal", "Portão", "Fora", "Se nunca for feita", "Contexto"],
+    "termos_mecanismo": ["webhook"],
+    "labels": [],
+    "quem_atribui": "quem prioriza"
+  },
+  "documento": {
+    "nome_arquivo": "{produto} | Projeto {nome} - v{versao} | {data}",
+    "pasta_drive_id": null
+  },
+  "canvas": { "type_url": null },
+  "esbocos": { "registro": null, "similaridade_minima": 0.6 }
+}

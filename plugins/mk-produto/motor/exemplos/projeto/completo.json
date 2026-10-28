@@ -1,0 +1,106 @@
+{
+  "versao": 1,
+  "ref": {
+    "data": "2026-11-09",
+    "fontes": [
+      { "rotulo": "Dado fictício para testar os moldes. Nada aqui é real.", "url": "" },
+      { "rotulo": "Contrato do projeto.json", "url": "https://example.com/contrato-projeto-json" }
+    ]
+  },
+  "projeto": {
+    "nome": "Projeto Exemplo",
+    "linear_id": "EXEMPLO-1",
+    "linear_url": "https://linear.app/exemplo/project/exemplo-1",
+    "kicker": "fX Loja · projeto de exemplo, dado fictício",
+    "statement": "Mostrar todo o projeto numa tela, sem inventar um número",
+    "destaque": "sem inventar",
+    "descricao": "Projeto fictício que existe só para testar o canvas. Preenche as quatro pranchas com dados de mentira, claramente rotulados, para conferir layout, estados e altura.",
+    "acento": "#7C3AED",
+    "dono": "Pessoa Exemplo",
+    "prazo": "2026-12-18",
+    "status": "Em planejamento (exemplo)"
+  },
+  "kpis": [
+    { "valor": "12", "rotulo": "itens de exemplo no escopo", "invertido": false, "fonte": "Exemplo fictício" },
+    { "valor": "4", "rotulo": "hipóteses de exemplo a validar", "invertido": false, "fonte": "Exemplo fictício" },
+    { "valor": "6 sem", "rotulo": "janela fictícia do roadmap", "invertido": false, "fonte": "Exemplo fictício" },
+    { "valor": "100%", "rotulo": "valores marcados como exemplo", "invertido": true, "fonte": "Exemplo fictício" }
+  ],
+  "fontes_dados": [
+    { "nome": "Fonte A", "papel": "o pedido", "descricao": "Onde nasce o pedido do projeto de exemplo.", "cor": "#111111" },
+    { "nome": "Fonte B", "papel": "a oficina", "descricao": "Onde o time executa e registra o andamento de exemplo.", "cor": "#B45309" },
+    { "nome": "Fonte C", "papel": "o resultado", "descricao": "Onde o resultado de exemplo é medido.", "cor": "#7C3AED" }
+  ],
+  "fases": [
+    { "n": 1, "nome": "Entender", "duracao": "1 semana", "descricao": "Levantar o contexto e as fontes do projeto de exemplo.", "gate": "Contexto aceito" },
+    { "n": 2, "nome": "Planejar", "duracao": "1 semana", "descricao": "Definir escopo, hipóteses e roadmap de exemplo.", "gate": "Plano aprovado" },
+    { "n": 3, "nome": "Construir", "duracao": "3 semanas", "descricao": "Executar as etapas do roadmap fictício.", "gate": "Entrega aceita" },
+    { "n": 4, "nome": "Validar", "duracao": "1 semana", "descricao": "Medir as hipóteses de exemplo contra o resultado esperado.", "gate": "Hipóteses medidas" }
+  ],
+  "capacidades": [
+    {
+      "grupo": "Ver",
+      "itens": [
+        { "nome": "Visão geral do projeto", "descricao": "Uma tela com o conceito do projeto de exemplo.", "estado": "no go-live" },
+        { "nome": "Roadmap por trilha", "descricao": "Gantt semanal com marcos e dependências.", "estado": "no go-live" },
+        { "nome": "Comparar versões do plano", "descricao": null, "estado": "depois" }
+      ]
+    },
+    {
+      "grupo": "Decidir",
+      "itens": [
+        { "nome": "Hipóteses com métrica", "descricao": "Cada hipótese traz métrica e resultado esperado.", "estado": "no go-live" },
+        { "nome": "Portão por fase", "descricao": null, "estado": "no go-live" },
+        { "nome": "Aprovação automática", "descricao": "Fora do escopo do exemplo.", "estado": "fora" }
+      ]
+    },
+    {
+      "grupo": "Medir",
+      "itens": [
+        { "nome": "Resultado por hipótese", "descricao": null, "estado": "depois" },
+        { "nome": "Alerta de atraso", "descricao": "Aviso quando uma etapa passa da data.", "estado": "depois" }
+      ]
+    }
+  ],
+  "hipoteses": [
+    { "id": "H0", "hipotese": "Se mostrarmos o projeto numa tela, o time lê em menos tempo do que lê o documento", "metrica": "Tempo até a primeira decisão (exemplo)", "resultado_esperado": "Menor que a leitura do documento (exemplo)", "ferramenta": "Teste com 3 pessoas (exemplo)", "situacao": "A validar", "fonte": "Exemplo fictício" },
+    { "id": "H1", "hipotese": "Lacuna visível gera mais perguntas úteis do que lacuna escondida", "metrica": "Perguntas respondidas por revisão (exemplo)", "resultado_esperado": "Mais respostas com a lacuna à mostra (exemplo)", "ferramenta": "Comentários no canvas (exemplo)", "situacao": "A validar", "fonte": "Exemplo fictício" },
+    { "id": "H2", "hipotese": "Separar molde e dados deixa a atualização barata", "metrica": "Arquivos republicados por mudança (exemplo)", "resultado_esperado": "Um arquivo, o JSON (exemplo)", "ferramenta": "Contagem de publicações (exemplo)", "situacao": "Confirmada no exemplo", "fonte": "Exemplo fictício" },
+    { "id": "H3", "hipotese": "O teto de 8000 px é respeitado quando o medidor roda antes de publicar", "metrica": "Pranchas cortadas (exemplo)", "resultado_esperado": "Zero (exemplo)", "ferramenta": "medir-pranchas.mjs (exemplo)", "situacao": "A validar", "fonte": "Exemplo fictício" }
+  ],
+  "roadmap": {
+    "janela": { "inicio": "2026-11-02", "fim": "2026-12-18" },
+    "trilhas": [
+      { "id": "prod", "nome": "Trilha de produto", "cor": "#7C3AED" },
+      { "id": "tech", "nome": "Trilha técnica", "cor": "#111111" },
+      { "id": "med", "nome": "Trilha de medição", "cor": "#0F766E" }
+    ],
+    "itens": [
+      { "id": "I1", "trilha": "prod", "nome": "Levantamento", "descricao": "Reunir as fontes do exemplo", "inicio": "2026-11-03", "dias": 5, "entregas": [{ "data": "2026-11-09", "texto": "Dossiê de exemplo" }] },
+      { "id": "I2", "trilha": "prod", "nome": "Escopo e hipóteses", "descricao": "Fechar o que entra e o que mede", "inicio": "2026-11-10", "dias": 5, "entregas": [] },
+      { "id": "I3", "trilha": "tech", "nome": "Molde das pranchas", "descricao": "Construir as quatro pranchas", "inicio": "2026-11-10", "dias": 8, "entregas": [{ "data": "2026-11-18", "texto": "Molde pronto" }] },
+      { "id": "I4", "trilha": "tech", "nome": "Integração dos dados", "descricao": "Ligar o JSON ao molde", "inicio": "2026-11-23", "dias": 6, "entregas": [] },
+      { "id": "I5", "trilha": "med", "nome": "Plano de medição", "descricao": "Definir como medir cada hipótese", "inicio": "2026-11-17", "dias": 5, "entregas": [] },
+      { "id": "I6", "trilha": "med", "nome": "Teste com o time", "descricao": "Rodar o teste de exemplo", "inicio": "2026-12-01", "dias": 7, "entregas": [{ "data": "2026-12-09", "texto": "Resultado do teste" }] },
+      { "id": "I7", "trilha": "med", "nome": "Leitura final", "descricao": "Fechar as hipóteses", "inicio": "2026-12-10", "dias": 5, "entregas": [] }
+    ],
+    "dependencias": [
+      { "de": "I1", "para": "I2", "trava": "escopo só fecha com o dossiê" },
+      { "de": "I2", "para": "I4", "trava": "integração usa o escopo fechado" },
+      { "de": "I3", "para": "I4", "trava": "dados só entram no molde pronto" },
+      { "de": "I5", "para": "I6", "trava": "teste segue o plano de medição" },
+      { "de": "I4", "para": "I6", "trava": "teste usa a integração" },
+      { "de": "I6", "para": "I7", "trava": "leitura depende do resultado" }
+    ],
+    "marcos": [
+      { "data": "2026-11-18", "rotulo": "molde", "cor": "#7C3AED" },
+      { "data": "2026-12-09", "rotulo": "teste", "cor": "#7C3AED" },
+      { "data": "2026-12-18", "rotulo": "prazo", "cor": "#111111" }
+    ],
+    "feriados": ["2026-11-02", "2026-11-20"]
+  },
+  "lacunas": [
+    { "secao": "roadmap", "o_que_falta": "Data do teste com o time ainda não confirmada (exemplo)", "depende_de": "Pessoa Exemplo" },
+    { "secao": "fontes_dados", "o_que_falta": "Fonte C sem dono definido (exemplo)", "depende_de": "Pessoa Exemplo" }
+  ]
+}

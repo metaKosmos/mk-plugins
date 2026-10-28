@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "vanta-produto/templates.schema.json",
+  "title": "templates.json (v1)",
+  "description": "A lista de templates de uma empresa. Cada template tem o nome pelo que entrega, a skill do motor que o produz (ou nulo, quando ainda não há), a etapa do fluxo e o estado. O motor lê este arquivo da pasta da camada; não carrega nome de template nenhum.",
+  "type": "object",
+  "required": ["versao", "templates"],
+  "additionalProperties": false,
+  "properties": {
+    "versao": { "const": 1 },
+    "templates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["nome", "entrega", "skill_do_motor", "etapa", "estado"],
+        "additionalProperties": false,
+        "properties": {
+          "nome": { "type": "string", "minLength": 1, "description": "Nome pelo que o template entrega, na língua de quem pede ('Ficha do Projeto'). Único na lista." },
+          "entrega": { "type": "string", "minLength": 1, "description": "O que sai dele, em uma frase: o formato e para que serve." },
+          "skill_do_motor": { "type": ["string", "null"], "description": "Nome da skill do motor que produz o template (pasta em skills/). Nulo: ainda não existe skill própria." },
+          "etapa": { "type": ["integer", "string", "null"], "description": "Etapa do fluxo em que entra (número), 'transversal' ou outro rótulo, ou nulo quando não está ligado a etapa." },
+          "estado": { "enum": ["pronto", "em esboço", "a trazer", "a construir"], "description": "pronto: tem skill do motor. em esboço: nasceu de um esboço repetido, molde em estrutura. a trazer: existe fora do plugin. a construir: previsto, nada feito." },
+          "estrutura": { "type": "array", "items": { "type": "string", "minLength": 1 }, "description": "Os blocos do molde, em ordem. Template nascido de esboço leva a estrutura que o esboço registrou; o esboço a usa para reconhecer formato parecido." }
+        }
+      }
+    }
+  }
+}
