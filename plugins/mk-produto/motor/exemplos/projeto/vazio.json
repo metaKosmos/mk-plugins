@@ -1,0 +1,74 @@
+{
+  "versao": 1,
+  "ref": {
+    "data": "2026-10-19",
+    "fontes": [
+      {
+        "rotulo": "Exemplo vazio: nenhuma fonte real",
+        "url": ""
+      }
+    ]
+  },
+  "projeto": {
+    "nome": "Projeto Exemplo Vazio",
+    "linear_id": null,
+    "linear_url": null,
+    "kicker": "Exemplo · não é dado real",
+    "statement": null,
+    "destaque": null,
+    "descricao": null,
+    "acento": "#7C3AED",
+    "dono": null,
+    "prazo": null,
+    "status": null
+  },
+  "kpis": [],
+  "fontes_dados": [],
+  "fases": [],
+  "capacidades": [],
+  "hipoteses": [],
+  "roadmap": {
+    "trilhas": [],
+    "itens": [],
+    "dependencias": [],
+    "marcos": [],
+    "feriados": []
+  },
+  "lacunas": [
+    {
+      "secao": "projeto",
+      "o_que_falta": "Dono do projeto não informado",
+      "depende_de": "quem prioriza o projeto"
+    },
+    {
+      "secao": "projeto",
+      "o_que_falta": "Prazo não informado",
+      "depende_de": "quem prioriza o projeto"
+    },
+    {
+      "secao": "kpis",
+      "o_que_falta": "Nenhum número de sucesso definido",
+      "depende_de": "dono do projeto"
+    },
+    {
+      "secao": "capacidades",
+      "o_que_falta": "O documento não lista o que o projeto entrega",
+      "depende_de": "dono do projeto"
+    },
+    {
+      "secao": "fases",
+      "o_que_falta": "O documento não descreve fases nem portões",
+      "depende_de": "dono do projeto"
+    },
+    {
+      "secao": "hipoteses",
+      "o_que_falta": "O documento não traz hipóteses nem métricas",
+      "depende_de": "dono do projeto"
+    },
+    {
+      "secao": "roadmap",
+      "o_que_falta": "Sem etapas nem datas no documento",
+      "depende_de": "time técnico"
+    }
+  ]
+}

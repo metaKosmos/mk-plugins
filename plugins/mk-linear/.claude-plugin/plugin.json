@@ -1,0 +1,11 @@
+{
+  "name": "mk-linear",
+  "displayName": "mK Linear",
+  "version": "0.1.0",
+  "description": "O Linear da mK como servidor do Claude Code, com o login guardado só na máquina de quem instala. Serve de fonte e de escrita para o mK Produto.",
+  "author": {
+    "name": "metaKosmos",
+    "url": "https://metakosmos.com.br"
+  },
+  "license": "UNLICENSED"
+}

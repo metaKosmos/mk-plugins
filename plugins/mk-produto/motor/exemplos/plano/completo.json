@@ -1,0 +1,251 @@
+{
+  "versao": 1,
+  "ref": {
+    "data": "2026-11-09",
+    "projeto": {
+      "nome": "Projeto Exemplo",
+      "id": "EXEMPLO-P1",
+      "url": "https://linear.app/exemplo/project/exemplo-p1"
+    },
+    "doc_url": "https://docs.google.com/document/d/exemplo/edit",
+    "fontes": [
+      {
+        "rotulo": "Dado fictício para testar o validador e o gerador de descrição. Nada aqui é real.",
+        "url": ""
+      },
+      {
+        "rotulo": "Contrato do plano.json",
+        "url": "https://example.com/contrato-plano-json"
+      }
+    ]
+  },
+  "milestones": [
+    {
+      "id": "ms-exemplo-1",
+      "nome": "Marco 1: lojista vende",
+      "data": "2026-12-04"
+    },
+    {
+      "id": "ms-exemplo-2",
+      "nome": "Marco 2: lojista acompanha",
+      "data": "2026-12-18"
+    },
+    {
+      "id": "ms-exemplo-3",
+      "nome": "Marco 3: lojista decide",
+      "data": null
+    }
+  ],
+  "conferencia": [
+    {
+      "capacidade": "Pagamento por cartão no checkout",
+      "estado": "parcial",
+      "repo": "loja-web",
+      "fonte": "src/checkout/cartao.js:42",
+      "sha": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0"
+    },
+    {
+      "capacidade": "Pagamento por Pix no checkout",
+      "estado": "não existe",
+      "repo": "loja-web",
+      "sha": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0"
+    },
+    {
+      "capacidade": "Painel de saldo do lojista",
+      "estado": "existe",
+      "repo": "pagamentos-web",
+      "fonte": "src/saldo/painel.js:10",
+      "sha": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0"
+    },
+    {
+      "capacidade": "Extrato mensal do lojista",
+      "estado": "não verificável daqui",
+      "repo": "pagamentos-web",
+      "motivo": "repositório não clonado nesta máquina e sem acesso pela API"
+    }
+  ],
+  "issues": [
+    {
+      "id_local": "I1",
+      "titulo": "Checkout fX Loja: cliente paga o pedido por cartão",
+      "milestone": "Marco 1: lojista vende",
+      "modo": "direto",
+      "fluxo": "Cliente da loja de exemplo fecha o pedido pagando por cartão",
+      "repos": [
+        "loja-web"
+      ],
+      "pode_mexer_em": [
+        "loja-web: src/checkout/"
+      ],
+      "resultado": "O cliente escolhe cartão, paga e recebe a confirmação com o número do pedido",
+      "entrega": [
+        "Cartão como forma de pagamento no checkout",
+        "Confirmação com o número do pedido",
+        "Pedido de teste pago com cartão"
+      ],
+      "teste_principal": "abro a loja de exemplo, fecho um pedido de teste com cartão, vejo a confirmação com o número do pedido",
+      "portao": "CI verde e o teste principal rodado por quem prioriza",
+      "fora": "Pix e boleto, parcelamento sem juros",
+      "se_nunca_for_feita": "A loja de exemplo não vende por cartão e perde as compras de quem só paga assim",
+      "contexto": "Hoje o checkout só aceita boleto (src/checkout/boleto.js:30, lido em 09/11/2026).",
+      "pontos": 5,
+      "responsavel": "Pessoa Exemplo",
+      "responsavel_autorizado": true,
+      "autorizado_por": "ordem de Pessoa Exemplo, 09/11/2026",
+      "data_limite": "2026-12-04",
+      "data_limite_fonte": "marco de Pessoa Exemplo, mensagem de 09/11/2026",
+      "bloqueia": [
+        "I2"
+      ],
+      "relacionada": [
+        "I5"
+      ]
+    },
+    {
+      "id_local": "I2",
+      "titulo": "Checkout fX Loja: cliente paga o pedido por Pix",
+      "milestone": "Marco 1: lojista vende",
+      "modo": "direto",
+      "fluxo": "Cliente da loja de exemplo fecha o pedido pagando por Pix",
+      "repos": [
+        "loja-web"
+      ],
+      "pode_mexer_em": [
+        "loja-web: src/checkout/"
+      ],
+      "resultado": "O cliente escolhe Pix, copia o código, paga e vê o pedido confirmado",
+      "entrega": [
+        "Pix como forma de pagamento no checkout",
+        "Código de Pix copiável",
+        "Confirmação do pagamento na tela"
+      ],
+      "teste_principal": "abro a loja de exemplo, fecho um pedido de teste com Pix, vejo o código e depois a confirmação do pagamento",
+      "portao": "CI verde e o teste principal rodado por quem prioriza",
+      "fora": "Cartão e boleto, reembolso por Pix",
+      "se_nunca_for_feita": "Quem prefere Pix abandona o carrinho",
+      "contexto": "Nenhum código de Pix existe hoje (conferido em 09/11/2026).",
+      "pontos": 3,
+      "responsavel_sugerido": "Pessoa Dois Exemplo"
+    },
+    {
+      "id_local": "I3",
+      "titulo": "Painel fX Pagamentos: lojista vê o saldo por produto",
+      "milestone": "Marco 2: lojista acompanha",
+      "modo": "direto",
+      "fluxo": "Lojista de exemplo confere quanto cada produto rendeu",
+      "repos": [
+        "pagamentos-web"
+      ],
+      "pode_mexer_em": [
+        "pagamentos-web: src/saldo/"
+      ],
+      "resultado": "O lojista vê o saldo quebrado por produto, com o total batendo com o saldo geral",
+      "entrega": [
+        "Saldo por produto no painel",
+        "Total igual ao saldo geral",
+        "Seletor de mês"
+      ],
+      "teste_principal": "abro o painel de saldo, escolho o mês, vejo uma linha por produto e o total igual ao saldo geral",
+      "portao": "CI verde e o total conferido contra o saldo geral",
+      "fora": "Saldo por loja, exportação",
+      "se_nunca_for_feita": "O lojista continua sem saber qual produto sustenta o caixa",
+      "contexto": "O painel de saldo geral existe (src/saldo/painel.js:10, lido em 09/11/2026), sem a quebra por produto.",
+      "pontos": 5,
+      "responsavel_sugerido": "Pessoa Dois Exemplo",
+      "bloqueia": [
+        "I4"
+      ],
+      "relacionada": [
+        "I1"
+      ]
+    },
+    {
+      "id_local": "I4",
+      "titulo": "Extrato fX Pagamentos: lojista baixa o extrato do mês",
+      "milestone": "Marco 2: lojista acompanha",
+      "modo": "direto",
+      "fluxo": "Lojista de exemplo leva o extrato do mês para a contabilidade",
+      "repos": [
+        "pagamentos-web"
+      ],
+      "pode_mexer_em": [
+        "pagamentos-web: src/extrato/"
+      ],
+      "resultado": "O lojista baixa um arquivo com todas as vendas e taxas do mês",
+      "entrega": [
+        "Botão de baixar o extrato do mês",
+        "Arquivo com vendas e taxas"
+      ],
+      "teste_principal": "abro o extrato do mês, clico em baixar, vejo o arquivo com as vendas e as taxas do mês",
+      "portao": "CI verde e o arquivo aberto por quem prioriza",
+      "fora": "Extrato de mais de um mês, envio por e-mail",
+      "se_nunca_for_feita": "O lojista monta o extrato à mão todo mês",
+      "pontos": 3,
+      "contexto": "Nenhum extrato existe hoje (conferido em 09/11/2026)."
+    },
+    {
+      "id_local": "I5",
+      "titulo": "Pedidos fX Loja: lojista vê o status certo do pedido pago",
+      "milestone": "Marco 2: lojista acompanha",
+      "tipo": "risco",
+      "modo": "direto",
+      "fluxo": "Lojista de exemplo acompanha os pedidos pagos",
+      "repos": [
+        "loja-web"
+      ],
+      "pode_mexer_em": [
+        "loja-web: src/pedidos/"
+      ],
+      "resultado": "O pedido pago aparece como pago na lista, sem esperar a atualização manual",
+      "entrega": [
+        "Status pago na lista sem ação manual",
+        "Teste do pedido pago"
+      ],
+      "teste_principal": "abro a lista de pedidos, pago um pedido de teste, vejo o status mudar para pago sem recarregar",
+      "portao": "CI verde e o pedido de teste visto como pago sem recarregar",
+      "fora": "Novos status, notificação ao cliente",
+      "se_nunca_for_feita": "O lojista despacha pedido que ainda aparece como pendente",
+      "contexto": "Achado da conferência: a lista lê o status gravado no pedido, que só muda na ação manual (src/pedidos/lista.js:77, lido em 09/11/2026).",
+      "pontos": 2,
+      "relacionada": [
+        "EXEMPLO-12"
+      ]
+    },
+    {
+      "id_local": "I6",
+      "titulo": "Saldo fX Pagamentos: escolho entre saldo por produto e saldo por loja",
+      "milestone": "Marco 3: lojista decide",
+      "tipo": "clareza",
+      "modo": "entrevista",
+      "fluxo": "Dono do projeto decide a visão de saldo que entra primeiro",
+      "repos": [],
+      "pode_mexer_em": [
+        "só esta issue: comentário com a decisão"
+      ],
+      "resultado": "A escolha fica registrada na issue, com as duas opções e a fonte de cada uma",
+      "entrega": [
+        "As duas opções com a fonte de cada uma",
+        "Recomendação",
+        "Escolha registrada na issue"
+      ],
+      "teste_principal": "abro esta issue e vejo a escolha com as duas opções, a fonte de cada uma e a recomendação",
+      "portao": "Escolha de Pessoa Exemplo registrada na issue, sem código",
+      "fora": "Construir qualquer uma das duas visões",
+      "se_nunca_for_feita": "O painel de saldo é construído sem saber qual visão o lojista pediu",
+      "pontos": 1,
+      "contexto": "Decisão aberta no plano de 09/11/2026, registrada em lacunas."
+    }
+  ],
+  "nao_viram_issue": [
+    {
+      "item": "Fechar o projeto antigo que o novo absorveu",
+      "motivo": "arrumação do gestor de tarefas, não é entrega para quem usa"
+    }
+  ],
+  "lacunas": [
+    {
+      "o_que_falta": "Data da milestone Marco 3: lojista decide",
+      "depende_de": "Pessoa Exemplo"
+    }
+  ]
+}

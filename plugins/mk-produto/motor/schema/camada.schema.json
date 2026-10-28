@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "vanta-produto/camada.schema.json",
+  "title": "camada.json (v1)",
+  "description": "O que o motor recebe de uma empresa: nome, grafias de marca, áreas e cores de acento, fontes de dados habilitadas e como acessá-las, e onde o documento vai no Drive. O motor não carrega nada disto: lê da pasta da camada (camada.json, tokens.json, esqueleto.md).",
+  "type": "object",
+  "required": ["versao", "empresa", "fontes", "documento"],
+  "additionalProperties": false,
+  "$defs": {
+    "cor": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+    "textoOuNulo": { "type": ["string", "null"] },
+    "listaDeTexto": { "type": "array", "items": { "type": "string" } },
+    "fonte": {
+      "type": "object",
+      "required": ["habilitada"],
+      "description": "Uma fonte de dados do levantamento. Campos além dos listados são livres e vão para o prompt do subagente da fonte.",
+      "properties": {
+        "habilitada": { "type": "boolean" },
+        "servidor": { "$ref": "#/$defs/textoOuNulo", "description": "Prefixo das ferramentas MCP da fonte, por exemplo mcp__servidor__ (só para fonte acessada por MCP)." },
+        "servidor_alternativo": { "$ref": "#/$defs/textoOuNulo", "description": "Prefixo de um segundo servidor MCP da mesma fonte. Vale só quando `servidor` não existe na sessão, e segue o `como` da camada (por exemplo, confirmar o workspace antes). Não pode estar em `proibido`." },
+        "proibido": { "$ref": "#/$defs/listaDeTexto", "description": "Servidores ou ferramentas que o subagente nunca usa nesta fonte." },
+        "como": { "$ref": "#/$defs/textoOuNulo", "description": "Instrução de acesso em uma ou duas frases, copiada para o prompt do subagente." }
+      }
+    }
+  },
+  "properties": {
+    "versao": { "const": 1 },
+    "empresa": {
+      "type": "object",
+      "required": ["nome"],
+      "additionalProperties": false,
+      "properties": {
+        "nome": { "type": "string", "minLength": 1, "description": "Nome da empresa dona do projeto. Dado de outra empresa não entra no levantamento." },
+        "rotulo_canvas": { "$ref": "#/$defs/textoOuNulo", "description": "Texto curto que abre o kicker e o rodapé das pranchas. Nulo: só 'PROJETO'." }
+      }
+    },
+    "escrita": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "travessao_proibido": { "type": "boolean", "description": "true reprova traço longo e meia-risca no JSON e no documento." },
+        "idioma": { "type": "string", "description": "Idioma do documento e do canvas, por exemplo pt-BR." },
+        "regras": { "$ref": "#/$defs/textoOuNulo", "description": "Regras de escrita em prosa, copiadas para os prompts dos subagentes." }
+      }
+    },
+    "marca": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "regra_texto": { "$ref": "#/$defs/textoOuNulo", "description": "A regra de grafia em prosa, que abre o prompt de cada subagente." },
+        "preservar_caixa": { "$ref": "#/$defs/listaDeTexto", "description": "Palavras de marca que o canvas mantém na grafia certa quando o título vai para caixa alta (por exemplo fX)." },
+        "reprovar": {
+          "type": "array",
+          "description": "Padrões que reprovam o texto. {{ANTES}} no padrão deixa URL, caminho e e-mail de fora.",
+          "items": {
+            "type": "object",
+            "required": ["padrao", "mensagem"],
+            "additionalProperties": false,
+            "properties": {
+              "padrao": { "type": "string", "minLength": 1 },
+              "ignorar_caixa": { "type": "boolean" },
+              "mensagem": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "normalizar": {
+          "type": "array",
+          "description": "Variantes que a extração troca pela grafia certa. O que casar e não estiver em 'aceitar' é reprovado.",
+          "items": {
+            "type": "object",
+            "required": ["padrao", "para"],
+            "additionalProperties": false,
+            "properties": {
+              "padrao": { "type": "string", "minLength": 1 },
+              "ignorar_caixa": { "type": "boolean" },
+              "para": { "type": "string", "minLength": 1 },
+              "aceitar": { "$ref": "#/$defs/listaDeTexto" }
+            }
+          }
+        }
+      }
+    },
+    "areas": {
+      "type": "array",
+      "description": "Tabela área ou produto para cor de acento do projeto. Com vence_no_prefixo, a área ganha de qualquer outra quando casa (ex.: prefixo 'Dados:'). Sem ele, só vale se exatamente uma área casar.",
+      "items": {
+        "type": "object",
+        "required": ["nome", "cor", "padrao"],
+        "additionalProperties": false,
+        "properties": {
+          "nome": { "type": "string", "minLength": 1 },
+          "cor": { "$ref": "#/$defs/cor" },
+          "padrao": { "type": "string", "minLength": 1 },
+          "ignorar_caixa": { "type": "boolean" },
+          "vence_no_prefixo": { "type": "boolean" }
+        }
+      }
+    },
+    "acento_padrao": { "$ref": "#/$defs/cor" },
+    "fontes": {
+      "type": "object",
+      "description": "Fontes do levantamento. As conhecidas: linear, granola, slack, drive, locais. Fonte ausente ou habilitada:false não é consultada e aparece no dossiê como 'não aplicável'.",
+      "additionalProperties": false,
+      "properties": {
+        "linear": { "$ref": "#/$defs/fonte" },
+        "granola": { "$ref": "#/$defs/fonte" },
+        "slack": { "$ref": "#/$defs/fonte" },
+        "drive": {
+          "type": "object",
+          "required": ["habilitada"],
+          "properties": {
+            "habilitada": { "type": "boolean" },
+            "cli": { "$ref": "#/$defs/textoOuNulo", "description": "CLI de Drive, por exemplo gws." },
+            "conta_dominio": { "$ref": "#/$defs/textoOuNulo", "description": "Domínio da conta Google que pode criar o documento. Outro domínio: a skill para e avisa." },
+            "servidor": { "$ref": "#/$defs/textoOuNulo", "description": "Servidor MCP de reserva quando o CLI falha." },
+            "como": { "$ref": "#/$defs/textoOuNulo" }
+          }
+        },
+        "locais": {
+          "type": "object",
+          "required": ["habilitada"],
+          "properties": {
+            "habilitada": { "type": "boolean" },
+            "pastas": { "$ref": "#/$defs/listaDeTexto", "description": "Pastas fixas da empresa. Vazio: a skill usa as indicadas por quem roda ou detecta pelos marcadores." },
+            "marcadores": { "$ref": "#/$defs/listaDeTexto", "description": "Pastas que denunciam um vault de notas na raiz do repositório (decisions/, sessions/...)." },
+            "como": { "$ref": "#/$defs/textoOuNulo" }
+          }
+        }
+      }
+    },
+    "gestor": {
+      "type": "object",
+      "description": "Como a skill plano-no-linear cria as issues no gestor de tarefas. Tudo opcional: sem este bloco valem os padrões neutros do motor (escada 1, 2, 3, 5, 8, teto 5, estado Backlog, contrato de onze campos).",
+      "additionalProperties": false,
+      "properties": {
+        "servidor": { "$ref": "#/$defs/textoOuNulo", "description": "Prefixo das ferramentas MCP do gestor. Nulo: vale fontes.linear.servidor." },
+        "servidor_alternativo": { "$ref": "#/$defs/textoOuNulo", "description": "Prefixo de um segundo servidor MCP do gestor, para escrita. Vale só quando o servidor escolhido não existe na sessão, vem antes de fontes.linear.servidor_alternativo, e a skill confirma o workspace (get_workspace ou get_team) antes de qualquer escrita. Não pode estar em `proibido`." },
+        "proibido": { "$ref": "#/$defs/listaDeTexto", "description": "Servidores que a skill nunca usa para criar issue. Nulo ou vazio: vale fontes.linear.proibido." },
+        "time": { "$ref": "#/$defs/textoOuNulo", "description": "Time padrão das issues. Nulo: a skill pergunta a quem roda." },
+        "estado_inicial": { "type": "string", "minLength": 1, "description": "Estado em que a issue nasce (padrão Backlog)." },
+        "escada_pontos": { "type": "array", "items": { "type": "integer", "minimum": 1 }, "description": "Valores de estimativa permitidos, em ordem crescente (padrão 1, 2, 3, 5, 8)." },
+        "teto_pontos": { "type": "integer", "minimum": 1, "description": "Maior estimativa de uma issue. Acima disso a skill fatia por fluxo (padrão 5). Precisa estar na escada." },
+        "contrato_campos": { "$ref": "#/$defs/listaDeTexto", "description": "Os onze rótulos do contrato da descrição, nesta ordem: modo, fluxo, repos, pode mexer em, resultado, o que entrega, teste principal, portão, fora, se nunca for feita, contexto." },
+        "termos_mecanismo": { "$ref": "#/$defs/listaDeTexto", "description": "Palavras a mais que denunciam título por mecanismo, somadas às do motor (endpoint, tabela, migração, refatorar...)." },
+        "labels": { "$ref": "#/$defs/listaDeTexto", "description": "Labels aplicadas a toda issue criada pela skill." },
+        "quem_atribui": { "$ref": "#/$defs/textoOuNulo", "description": "Quem atribui a issue quando ela nasce sem responsável, para a linha 'Responsável sugerido' (padrão: quem prioriza)." },
+        "como": { "$ref": "#/$defs/textoOuNulo", "description": "Instrução de acesso em uma ou duas frases." }
+      }
+    },
+    "documento": {
+      "type": "object",
+      "required": ["nome_arquivo"],
+      "additionalProperties": false,
+      "properties": {
+        "nome_arquivo": { "type": "string", "minLength": 1, "description": "Padrão do nome do Google Doc. Campos: {produto}, {nome}, {versao}, {data}. Quem rodou pode pedir outro nome, e o pedido vence." },
+        "pasta_drive_id": { "$ref": "#/$defs/textoOuNulo", "description": "Pasta do Drive de destino. Nulo: raiz do Drive de quem roda." }
+      }
+    },
+    "canvas": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type_url": { "$ref": "#/$defs/textoOuNulo", "description": "Link do tipo Design de Artifact desta conta. Nulo: a skill descobre por quickstart." }
+      }
+    },
+    "esbocos": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Configuração da skill esboco.",
+      "properties": {
+        "registro": { "$ref": "#/$defs/textoOuNulo", "description": "Arquivo .jsonl onde os formatos escolhidos ficam registrados, fora do cache do plugin. '~' vale a pasta do usuário. Nulo: ~/.config/vanta-produto/esbocos.jsonl." },
+        "similaridade_minima": { "type": "number", "minimum": 0.1, "description": "De 0,1 a 1: a pontuação a partir da qual duas estruturas contam como formato parecido. Padrão 0,6." }
+      }
+    }
+  }
+}

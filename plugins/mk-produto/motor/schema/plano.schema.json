@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "vanta-produto/plano.schema.json",
+  "title": "plano.json (v1)",
+  "description": "A proposta de issues que a skill plano-no-linear leva à aprovação e, depois do ok, cria no gestor de tarefas. Uma issue por interface ou fluxo, nunca por mecanismo. Dado sem fonte não entra: vira lacunas[]. null significa desconhecido.",
+  "type": "object",
+  "required": ["versao", "ref", "issues"],
+  "additionalProperties": false,
+  "$defs": {
+    "data": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "dataOuNulo": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "texto": { "type": ["string", "null"] },
+    "url": { "type": ["string", "null"], "pattern": "^(https?://.*)?$" },
+    "listaDeTexto": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+  },
+  "properties": {
+    "versao": { "const": 1 },
+    "ref": {
+      "type": "object",
+      "required": ["data"],
+      "additionalProperties": false,
+      "description": "Carimbo da proposta: de quando é a leitura e de onde ela veio.",
+      "properties": {
+        "data": { "$ref": "#/$defs/data" },
+        "projeto": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["nome"],
+          "properties": {
+            "nome": { "type": "string", "minLength": 1 },
+            "id": { "$ref": "#/$defs/texto", "description": "Id do projeto no gestor de tarefas. Ausente em projeto novo." },
+            "url": { "$ref": "#/$defs/url" },
+            "novo": { "type": "boolean", "description": "true quando o projeto ainda não existe no gestor e a proposta inclui criá-lo (etapa opcional, só depois do ok)." },
+            "descricao": { "$ref": "#/$defs/texto", "description": "Texto do projeto novo, vindo do plano aprovado." }
+          }
+        },
+        "doc_url": { "$ref": "#/$defs/url", "description": "O Google Doc do plano aprovado." },
+        "fontes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "rotulo": { "$ref": "#/$defs/texto" },
+              "url": { "$ref": "#/$defs/url" }
+            }
+          }
+        }
+      }
+    },
+    "milestones": {
+      "type": "array",
+      "description": "As milestones do projeto. As que o gestor já tem vêm da etapa A, com o nome exatamente como o gestor devolve, inclusive com espaço no fim: a issue entra pelo id. As marcadas com novo ainda não existem: a proposta inclui criá-las (etapa opcional, só depois do ok).",
+      "items": {
+        "type": "object",
+        "required": ["nome"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/texto", "description": "Id no gestor. Ausente em milestone nova." },
+          "nome": { "type": "string", "minLength": 1 },
+          "data": { "$ref": "#/$defs/dataOuNulo", "description": "Data alvo da milestone. Nulo: sem data no gestor." },
+          "novo": { "type": "boolean", "description": "true quando a milestone ainda não existe no gestor e a proposta inclui criá-la." },
+          "descricao": { "$ref": "#/$defs/texto", "description": "Texto da milestone nova." },
+          "data_fonte": { "$ref": "#/$defs/texto", "description": "De onde vem a data de uma milestone nova. Obrigatório com data: data sem marco da pessoa é chute." }
+        }
+      }
+    },
+    "conferencia": {
+      "type": "array",
+      "description": "O resultado da etapa B: o que já existe nos repositórios, uma linha por capacidade da lista fechada.",
+      "items": {
+        "type": "object",
+        "required": ["capacidade", "estado"],
+        "additionalProperties": false,
+        "properties": {
+          "capacidade": { "type": "string", "minLength": 1 },
+          "estado": { "enum": ["existe", "parcial", "não existe", "não verificável daqui"] },
+          "repo": { "$ref": "#/$defs/texto", "description": "Slug do repositório onde o estado foi visto. Obrigatório em existe, parcial e não existe (onde se procurou). Em não verificável daqui pode faltar; havendo, o repositório lido (ou os lidos, separados por vírgula)." },
+          "fonte": { "$ref": "#/$defs/texto", "description": "caminho:linha dentro de repo, sem o prefixo do repo (o validador reprova \"loja-web/src/x.js:42\" quando repo é loja-web). Obrigatório em existe e parcial." },
+          "sha": { "$ref": "#/$defs/texto", "description": "SHA do HEAD lido. Obrigatório em existe, parcial e não existe." },
+          "motivo": { "$ref": "#/$defs/texto", "description": "Obrigatório em não verificável daqui: o erro ou a falta de acesso." }
+        }
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id_local", "titulo", "milestone", "modo", "fluxo", "repos", "pode_mexer_em", "resultado", "entrega", "teste_principal", "portao", "fora", "se_nunca_for_feita", "contexto", "pontos"],
+        "additionalProperties": false,
+        "properties": {
+          "id_local": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$", "description": "Id da proposta, só para ligar dependências antes de a issue existir." },
+          "tipo": { "enum": ["fluxo", "risco", "clareza"], "description": "fluxo (padrão), risco (achado da conferência) ou clareza (decisão pendente)." },
+          "modo": { "enum": ["direto", "entrevista", "brainstorming", "pesquisa"], "description": "Como quem executa conduz a issue: direto (executa), entrevista (pergunta a quem decide), brainstorming (explora opções) ou pesquisa (levanta e registra)." },
+          "titulo": { "type": "string", "minLength": 1, "description": "<Superfície>: <o que o usuário faz>" },
+          "milestone": { "$ref": "#/$defs/texto", "description": "Nome da milestone. Nulo: a issue fica sem milestone." },
+          "fluxo": { "type": "string", "minLength": 1, "description": "Quem usa e o que está fazendo." },
+          "repos": { "$ref": "#/$defs/listaDeTexto", "description": "Slugs dos repositórios. Lista vazia vira 'nenhum'." },
+          "pode_mexer_em": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "O que a issue pode mexer: repositório e pasta, ou 'só esta issue' quando a entrega é decisão. Fora disso, quem executa pergunta." },
+          "resultado": { "type": "string", "minLength": 1, "description": "O que passa a funcionar, em palavras de quem usa." },
+          "entrega": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "O checklist do que entregar, um item por entrega. Tarefa não técnica sem entrega própria entra aqui, na issue que ela destrava." },
+          "teste_principal": { "type": "string", "minLength": 1, "description": "abro X, faço Y, vejo Z" },
+          "portao": { "type": "string", "minLength": 1, "description": "O que precisa ser verdade para a issue avançar: quem confere e com que prova." },
+          "fora": { "type": "string", "minLength": 1, "description": "O que não entra nesta issue." },
+          "se_nunca_for_feita": { "type": "string", "minLength": 1, "description": "O que se perde." },
+          "contexto": { "type": "string", "minLength": 1, "description": "Uma a três linhas: o que existe hoje, com fonte e data da leitura. Sem leitura, 'não conferido: <motivo>'." },
+          "pontos": { "type": ["integer", "null"], "minimum": 1 },
+          "responsavel": { "$ref": "#/$defs/texto", "description": "Só preenchido com responsavel_autorizado verdadeiro." },
+          "responsavel_autorizado": { "type": "boolean", "description": "true quando quem roda mandou, por escrito, atribuir esta issue a esta pessoa." },
+          "autorizado_por": { "$ref": "#/$defs/texto", "description": "A ordem, com quem deu e quando: 'ordem de <Nome>, DD/MM/AAAA'. Obrigatório com responsavel_autorizado." },
+          "responsavel_sugerido": { "$ref": "#/$defs/texto", "description": "Quem a proposta sugere. Vai para o texto da issue, não para o campo de responsável." },
+          "data_limite": { "$ref": "#/$defs/dataOuNulo", "description": "Só quando existe marco datado da pessoa. Nulo: sem data." },
+          "data_limite_fonte": { "$ref": "#/$defs/texto", "description": "De onde vem a data. Obrigatório com data_limite." },
+          "bloqueia": { "$ref": "#/$defs/listaDeTexto", "description": "id_local de outra issue da proposta, ou id de issue que já existe no gestor." },
+          "relacionada": { "$ref": "#/$defs/listaDeTexto", "description": "id_local de outra issue da proposta, ou id de issue que já existe no gestor." }
+        }
+      }
+    },
+    "nao_viram_issue": {
+      "type": "array",
+      "description": "O que a proposta deixou de fora de propósito (arrumação de gestor, o que já existe), para o relatório.",
+      "items": {
+        "type": "object",
+        "required": ["item", "motivo"],
+        "additionalProperties": false,
+        "properties": {
+          "item": { "type": "string", "minLength": 1 },
+          "motivo": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "lacunas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["o_que_falta"],
+        "additionalProperties": false,
+        "properties": {
+          "o_que_falta": { "type": "string", "minLength": 1 },
+          "depende_de": { "$ref": "#/$defs/texto" }
+        }
+      }
+    }
+  }
+}

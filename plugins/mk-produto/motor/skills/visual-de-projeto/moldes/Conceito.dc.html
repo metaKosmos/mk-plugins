@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Projeto · conceito</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<!--vp:tokens-->
+<style>
+body{margin:0;background:var(--vp-fundo)}
+a{color:var(--lk,var(--vp-acento));text-decoration-color:var(--lkc,currentColor);text-decoration-thickness:var(--lkt,auto);text-underline-offset:var(--lko,auto)}a:hover{color:var(--vp-texto)}
+</style>
+</helmet>
+<div style="width: 1440px; box-sizing: border-box; padding: 64px; background: var(--vp-fundo); color: var(--vp-texto); font-family: var(--vp-fonte-corpo); font-weight: var(--vp-corpo-peso); display: flex; flex-direction: column; gap: 100px; {{linkVars}}">
+
+  <div style="display: flex; justify-content: space-between; align-items: center; gap: 24px;">
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: none;">{{kickerTxt}}</div>
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">{{refTxt}}</div>
+  </div>
+
+  <sc-if value="{{carregando}}" hint-placeholder-val="{{false}}">
+    <div style="border: 1px dashed var(--vp-borda); border-radius: var(--vp-raio-grande); padding: 48px; font-size: 18px; color: var(--vp-texto-suave);">Carregando dados do projeto…</div>
+  </sc-if>
+
+  <sc-if value="{{falhou}}" hint-placeholder-val="{{false}}">
+    <div style="border: 1px solid var(--vp-alerta); border-radius: var(--vp-raio-grande); padding: 48px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-alerta);">Dados do projeto indisponíveis</div>
+      <div style="font-size: 18px; line-height: 1.45;">O canvas não conseguiu ler dados/projeto.json. Republique o arquivo e recarregue a página.</div>
+      <div style="font-size: 13px; color: var(--vp-texto-suave);">Detalhe técnico: {{erroMsg}}</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{pronto}}" hint-placeholder-val="{{true}}">
+
+  <sc-if value="{{s0}}" hint-placeholder-val="{{true}}">
+  <div style="display: flex; flex-direction: column; gap: 24px; border-bottom: 1px solid var(--vp-borda); padding-bottom: 64px;">
+    <div style="font-size: 13px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">Projeto</div>
+    <div style="display: flex; align-items: center; gap: 24px">
+      <span style="width: 64px; height: 64px; flex: none; border-radius: 9999px; background: {{accent}};"></span>
+      <h1 style="margin: 0; font-size: 96px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; min-width: 0; overflow-wrap: anywhere;">{{nome}}</h1>
+    </div>
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave); margin-top: 40px;">Statement</div>
+    <sc-if value="{{temStatement}}" hint-placeholder-val="{{true}}">
+      <div style="font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 80px; line-height: 0.95; text-transform: none; letter-spacing: 0.01em; max-width: 1200px;">{{stAntes}}<span style="{{accentGrande}}">{{stDestaque}}</span>{{stDepois}}</div>
+    </sc-if>
+    <sc-if value="{{semStatement}}" hint-placeholder-val="{{false}}">
+      <div style="border: 1px dashed var(--vp-borda-forte); border-radius: var(--vp-raio); padding: 24px; font-size: 18px; color: var(--vp-texto-suave); max-width: 1200px;">Statement a definir. Sem frase de posicionamento na fonte, nada foi inventado.</div>
+    </sc-if>
+    <p style="margin: 0; font-size: 24px; line-height: 1.35; color: var(--vp-texto-suave); max-width: 1100px">{{descricaoTxt}}</p>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;">
+      <sc-for list="{{meta}}" as="m" hint-placeholder-count="4">
+        <div style="display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--vp-borda); padding-top: 12px; min-width: 0;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">{{m.rotulo}}</span>
+          <sc-if value="{{m.link}}" hint-placeholder-val="{{false}}"><a href="{{m.url}}" style="font-size: 16px; font-weight: 700; overflow-wrap: anywhere;">{{m.valor}}</a></sc-if>
+          <sc-if value="{{m.texto}}" hint-placeholder-val="{{true}}"><span style="{{m.estilo}}">{{m.valor}}</span></sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 32px;">
+      <sc-if value="{{temKpis}}" hint-placeholder-val="{{true}}">
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;">
+          <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+            <div style="{{k.card}}">
+              <div style="{{k.valorEstilo}}">{{k.valor}}</div>
+              <div style="{{k.rotuloEstilo}}">{{k.rotulo}}</div>
+              <div style="{{k.fonteEstilo}}">{{k.fonte}}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{semKpis}}" hint-placeholder-val="{{false}}">
+        <div style="border: 1px dashed var(--vp-borda-forte); border-radius: var(--vp-raio); padding: 24px; display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">KPIs</span>
+          <span style="font-size: 16px; line-height: 1.45;">{{vazioKpis}}</span>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{s1}}" hint-placeholder-val="{{true}}">
+  <div style="display: flex; flex-direction: column; gap: 24px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">De onde vem a informação</div>
+      <h2 style="margin: 0; font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 56px; line-height: 1.05; text-transform: var(--vp-titulo-caixa);">Fontes de dados</h2>
+    </div>
+    <sc-if value="{{temFontes}}" hint-placeholder-val="{{true}}">
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+        <sc-for list="{{fontes}}" as="f" hint-placeholder-count="3">
+          <div style="{{f.card}}">
+            <div style="display: flex; align-items: center; gap: 8px;"><span style="{{f.ponto}}"></span><span style="font-size: 16px; font-weight: 700; min-width: 0; overflow-wrap: anywhere;">{{f.nome}}</span><span style="margin-left: auto; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--vp-texto-suave); text-align: right;">{{f.papel}}</span></div>
+            <div style="font-size: 14px; line-height: 1.45; color: var(--vp-texto-suave);">{{f.descricao}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{semFontes}}" hint-placeholder-val="{{false}}">
+      <div style="border: 1px dashed var(--vp-borda-forte); border-radius: var(--vp-raio-grande); padding: 32px; font-size: 16px; line-height: 1.45;">{{vazioFontes}}</div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{s2}}" hint-placeholder-val="{{true}}">
+  <div style="display: flex; flex-direction: column; gap: 24px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">A jornada do projeto</div>
+      <h2 style="margin: 0; font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 56px; line-height: 1.05; text-transform: var(--vp-titulo-caixa);">Fases e portões</h2>
+    </div>
+    <sc-if value="{{temFases}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <sc-for list="{{faseLinhas}}" as="row" hint-placeholder-count="1">
+          <div style="{{row.grade}}">
+            <sc-for list="{{row.fases}}" as="f" hint-placeholder-count="4">
+              <div style="{{f.card}}">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px;"><span style="font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 40px; line-height: 1; color: {{f.numCor}};">{{f.n}}</span><span style="font-size: 12px; font-weight: 700; color: var(--vp-texto-suave); text-align: right;">{{f.duracao}}</span></div>
+                <div style="font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 32px; line-height: 1; text-transform: none; overflow-wrap: anywhere;">{{f.nome}}</div>
+                <div style="font-size: 14px; line-height: 1.45; color: var(--vp-texto-suave);">{{f.descricao}}</div>
+                <div style="margin-top: auto; display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--vp-borda); padding-top: 12px;"><span style="width: 12px; height: 12px; flex: none; transform: rotate(45deg); background: {{f.gateCor}};"></span><span style="font-size: 12px; font-weight: 700; line-height: 1.3;">{{f.gate}}</span></div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{semFases}}" hint-placeholder-val="{{false}}">
+      <div style="border: 1px dashed var(--vp-borda-forte); border-radius: var(--vp-raio-grande); padding: 32px; font-size: 16px; line-height: 1.45;">{{vazioFases}}</div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{s3}}" hint-placeholder-val="{{true}}">
+  <div style="display: flex; flex-direction: column; gap: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">O que ainda não tem fonte</div>
+        <h2 style="margin: 0; font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 56px; line-height: 1.05; text-transform: var(--vp-titulo-caixa);">Lacunas</h2>
+      </div>
+      <p style="margin: 0; font-size: 16px; line-height: 1.5; color: var(--vp-texto-suave); max-width: 520px;">Número, nome, data ou cliente sem fonte não entra no canvas. Entra aqui, com quem pode responder.</p>
+    </div>
+    <sc-if value="{{temLacunas}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; border: 1px solid var(--vp-borda); border-radius: var(--vp-raio-grande); overflow: hidden;">
+        <sc-for list="{{lacunas}}" as="l" hint-placeholder-count="3">
+          <div style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 300px; gap: 24px; align-items: baseline; padding: 20px 32px; border-bottom: 1px solid var(--vp-borda);">
+            <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; {{accentTexto}}">{{l.secao}}</span>
+            <span style="font-size: 16px; font-weight: 700; line-height: 1.4;">{{l.falta}}</span>
+            <span style="font-size: 13px; line-height: 1.4; color: var(--vp-texto-suave);">Depende de: {{l.depende}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{semLacunas}}" hint-placeholder-val="{{false}}">
+      <div style="border: 1px dashed var(--vp-borda-forte); border-radius: var(--vp-raio-grande); padding: 32px; font-size: 16px; line-height: 1.45;">Nenhuma lacuna registrada. Se algo parece faltar, a fonte não foi levantada: confirme antes de assumir que está completo.</div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{s4}}" hint-placeholder-val="{{true}}">
+  <div style="display: flex; flex-direction: column; gap: 24px;">
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">Próximas pranchas</div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+      <sc-for list="{{proximas}}" as="p" hint-placeholder-count="3">
+        <a href="{{p.href}}" style="text-decoration: none; color: var(--vp-texto); background: var(--vp-superficie); border: 1px solid var(--vp-borda); border-radius: var(--vp-raio-grande); padding: 32px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px;"><span style="font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 40px; line-height: 1; text-transform: var(--vp-titulo-caixa);">{{p.nome}}</span><span style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-texto-suave);">{{p.rotulo}}</span></div>
+          <div style="font-size: 16px; line-height: 1.5; color: var(--vp-texto-suave);">{{p.resumo}}</div>
+          <span style="font-size: 14px; font-weight: 700; {{accentTexto}}">{{p.cta}} →</span>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--vp-borda); padding-top: 16px;">
+    <div style="display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; line-height: 1.5; color: var(--vp-texto-suave);">
+      <span style="font-weight: 700; color: var(--vp-texto);">Fontes:</span>
+      <sc-for list="{{refFontes}}" as="f" hint-placeholder-count="2">
+        <sc-if value="{{f.link}}" hint-placeholder-val="{{false}}"><a href="{{f.url}}">{{f.rotulo}}</a></sc-if>
+        <sc-if value="{{f.texto}}" hint-placeholder-val="{{true}}"><span>{{f.rotulo}}</span></sc-if>
+      </sc-for>
+      <sc-if value="{{semRefFontes}}" hint-placeholder-val="{{false}}"><span>nenhuma fonte registrada no projeto.json</span></sc-if>
+    </div>
+    <div style="font-size: 12px; line-height: 1.5; color: var(--vp-texto-suave);">{{refTxt}}. Conteúdo lido de dados/projeto.json: o molde não guarda texto de projeto.</div>
+  </div>
+
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"","options":["__VP_OPCOES__"]},"secaoDe":{"editor":"int","default":0,"min":0,"max":5},"secaoAte":{"editor":"int","default":5,"min":0,"max":5},"$preview":{"width":1440,"height":3000}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = { d: null, erro: null };
+  }
+  componentDidMount() {
+    var self = this;
+    fetch('dados/projeto.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) { self.setState({ d: d, erro: null }); })
+      .catch(function (e) { self.setState({ erro: String((e && e.message) || e) }); });
+  }
+  renderVals() {
+    var VP = /*vp:config*/{"caixa":"none","preservar":[],"marca":"","cores":{"fundo":"#ffffff","acento":"#7c3aed"}}/*vp:fim*/;
+    var ROTULO = (VP.marca ? VP.marca + ' ' : '') + 'PROJETO';
+    var d = this.state.d, erro = this.state.erro;
+    function norm(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z_]/g, ''); }
+    function up(s) { var t = String(s == null ? '' : s); if (VP.caixa !== 'uppercase') return t; t = t.toUpperCase(); VP.preservar.forEach(function (w) { var re = new RegExp('(^|[^A-Za-z0-9])' + w.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![a-z])', 'g'); t = t.replace(re, function (m, a) { return a + w; }); }); return t; }
+    function has(s) { return s !== null && s !== undefined && String(s).trim() !== ''; }
+    function dataBr(s) { if (!/^\d{4}-\d{2}-\d{2}$/.test(s || '')) return null; var p = s.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+    var pronto = !!d, carregando = !d && !erro, falhou = !d && !!erro;
+    var out = { carregando: carregando, falhou: falhou, pronto: pronto, erroMsg: erro || '' };
+    var de = this.props.secaoDe == null ? 0 : this.props.secaoDe, ate = this.props.secaoAte == null ? 5 : this.props.secaoAte;
+    ['s0', 's1', 's2', 's3', 's4'].forEach(function (k, i) { out[k] = i >= de && i < ate; });
+    if (!pronto) {
+      out.accent = VP.cores.acento; out.accentGrande = 'color: ' + VP.cores.acento + ';'; out.accentTexto = 'color: ' + VP.cores.acento + ';'; out.linkVars = ''; out.kickerTxt = ROTULO; out.refTxt = '';
+      return out;
+    }
+    var P = d.projeto || {};
+    var accent = (this.props.accent && /^#[0-9a-fA-F]{6}$/.test(this.props.accent)) ? this.props.accent : ((P.acento && /^#[0-9a-fA-F]{6}$/.test(P.acento)) ? P.acento : VP.cores.acento);
+    function lumC(h) { var v = [1, 3, 5].map(function (k) { var c = parseInt(h.substr(k, 2), 16) / 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; }
+    function contBranco(h) { var a = lumC(VP.cores.fundo) + 0.05, b = lumC(h) + 0.05; return a > b ? a / b : b / a; }
+    // acento claro (ex.: um azul claro) não serve de cor de texto sobre o fundo: o texto vira a cor de texto do tema e o acento vira realce
+    function corTexto(h, min) { return contBranco(h) >= min ? h : 'var(--vp-texto)'; }
+    function textoSobre(fundo) { return contBranco(fundo) >= 4.5 ? 'var(--vp-inverso)' : 'var(--vp-texto)'; }
+    var accentGrande = contBranco(accent) >= 3 ? 'color: ' + accent + ';' : 'color: var(--vp-texto); background: linear-gradient(transparent 58%, ' + accent + ' 58%);';
+    var accentTexto = contBranco(accent) >= 4.5 ? 'color: ' + accent + ';' : 'color: var(--vp-texto); text-decoration: underline; text-decoration-color: ' + accent + '; text-decoration-thickness: 3px; text-underline-offset: 4px;';
+    // link usa a mesma regra do accentTexto: acento se tiver 4,5:1 com o fundo, senão cor de texto do tema sublinhada no acento
+    var linkVars = contBranco(accent) >= 4.5 ? '--lk: ' + accent + ';' : '--lk: var(--vp-texto); --lkc: ' + accent + '; --lkt: 3px; --lko: 4px;';
+    var lac = d.lacunas || [];
+    function lacDe(chave) { return lac.filter(function (l) { return norm(l.secao) === chave; }); }
+    function vazio(txt, chave) {
+      var l = lacDe(chave);
+      if (!l.length) return txt + ' Nenhuma lacuna registrada para esta seção: confirme se ela não se aplica.';
+      return txt + ' Lacuna: ' + l.map(function (x) { return x.o_que_falta + (has(x.depende_de) ? ' (depende de ' + x.depende_de + ')' : ''); }).join(' · ') + '.';
+    }
+    out.accent = accent; out.accentGrande = accentGrande; out.accentTexto = accentTexto; out.linkVars = linkVars;
+    out.kickerTxt = has(P.kicker) ? up(P.kicker) : ROTULO;
+    var refData = dataBr(d.ref && d.ref.data);
+    out.refTxt = 'Referência em ' + (refData || 'data a definir');
+    out.nome = P.nome || 'Projeto sem nome';
+
+    var st = has(P.statement) ? String(P.statement) : '';
+    out.temStatement = !!st; out.semStatement = !st;
+    var stU = up(st), dsq = has(P.destaque) ? up(P.destaque) : '';
+    var ix = dsq ? stU.indexOf(dsq) : -1;
+    if (ix >= 0) { out.stAntes = stU.slice(0, ix); out.stDestaque = stU.slice(ix, ix + dsq.length); out.stDepois = stU.slice(ix + dsq.length); }
+    else { out.stAntes = stU; out.stDestaque = ''; out.stDepois = ''; }
+    out.descricaoTxt = has(P.descricao) ? P.descricao : 'Descrição a definir.';
+
+    var pend = 'font-size: 16px; font-weight: 700; color: var(--vp-texto-suave); font-style: italic;', ok = 'font-size: 16px; font-weight: 700; overflow-wrap: anywhere;';
+    function metaTxt(rotulo, v) { return has(v) ? { rotulo: rotulo, valor: String(v), texto: true, link: false, url: '', estilo: ok } : { rotulo: rotulo, valor: 'a definir', texto: true, link: false, url: '', estilo: pend }; }
+    var linearOk = has(P.linear_url) && /^https?:\/\//i.test(P.linear_url);
+    out.meta = [
+      metaTxt('Dono', P.dono),
+      metaTxt('Prazo', dataBr(P.prazo)),
+      metaTxt('Status', P.status),
+      linearOk ? { rotulo: 'Linear', valor: has(P.linear_id) ? P.linear_id : 'abrir no Linear', texto: false, link: true, url: P.linear_url, estilo: '' } : metaTxt('Linear', P.linear_id)
+    ];
+
+    var K = d.kpis || [];
+    out.temKpis = K.length > 0; out.semKpis = K.length === 0;
+    out.vazioKpis = vazio('Sem KPIs registrados.', 'kpis');
+    out.kpis = K.map(function (k) {
+      var inv = !!k.invertido;
+      return {
+        valor: up(k.valor), rotulo: k.rotulo, fonte: has(k.fonte) ? 'Fonte: ' + k.fonte : 'Fonte a definir',
+        card: 'background: ' + (inv ? 'var(--vp-texto)' : 'var(--vp-superficie)') + '; border: 1px solid ' + (inv ? 'var(--vp-texto)' : 'var(--vp-borda)') + '; border-radius: var(--vp-raio); padding: 24px; display: flex; flex-direction: column; gap: 8px; min-width: 0;',
+        valorEstilo: "font-family: var(--vp-fonte-titulo); font-weight: var(--vp-titulo-peso); font-size: 56px; line-height: 1; text-transform: none; overflow-wrap: anywhere; color: " + (inv ? 'var(--vp-inverso)' : 'var(--vp-texto)') + ';',
+        rotuloEstilo: 'font-size: 15px; line-height: 1.4; color: ' + (inv ? 'var(--vp-borda)' : 'var(--vp-texto-suave)') + ';',
+        fonteEstilo: 'font-size: 12px; line-height: 1.4; color: ' + (inv ? 'var(--vp-apagado)' : 'var(--vp-texto-suave)') + ';'
+      };
+    });
+
+    var F = d.fontes_dados || [];
+    out.temFontes = F.length > 0; out.semFontes = F.length === 0;
+    out.vazioFontes = vazio('Sem fontes de dados registradas.', 'fontes_dados');
+    out.fontes = F.map(function (f) {
+      var cor = (f.cor && /^#[0-9a-fA-F]{6}$/.test(f.cor)) ? f.cor : 'var(--vp-texto)';
+      return { nome: f.nome, papel: has(f.papel) ? f.papel : '', descricao: has(f.descricao) ? f.descricao : 'Descrição a definir.',
+        card: 'background: var(--vp-superficie); border: 1px solid var(--vp-borda); border-radius: var(--vp-raio); padding: 20px; display: flex; flex-direction: column; gap: 8px; min-width: 0;',
+        ponto: 'width: 10px; height: 10px; flex: none; border-radius: 9999px; background: ' + cor + ';' };
+    });
+
+    var FA = (d.fases || []).slice().sort(function (a, b) { return a.n - b.n; });
+    out.temFases = FA.length > 0; out.semFases = FA.length === 0;
+    out.vazioFases = vazio('Sem fases registradas.', 'fases');
+    var linhas = [];
+    for (var i = 0; i < FA.length; i += 5) {
+      var chunk = FA.slice(i, i + 5);
+      linhas.push({
+        grade: 'display: grid; grid-template-columns: repeat(' + Math.min(5, FA.length) + ', minmax(0, 1fr)); gap: 16px; align-items: stretch;',
+        fases: chunk.map(function (f, j) {
+          var ultima = (i + j) === FA.length - 1;
+          return { n: ('0' + f.n).slice(-2), nome: up(f.nome), duracao: has(f.duracao) ? f.duracao : 'duração a definir', descricao: has(f.descricao) ? f.descricao : 'Descrição a definir.',
+            gate: has(f.gate) ? f.gate : 'portão a definir', numCor: ultima ? corTexto(accent, 3) : 'var(--vp-texto)', gateCor: has(f.gate) ? 'var(--vp-texto)' : 'var(--vp-apagado)',
+            card: 'background: ' + (ultima ? 'var(--vp-inverso)' : 'var(--vp-superficie)') + '; border: 1px solid ' + (ultima ? accent : 'var(--vp-borda)') + '; border-radius: var(--vp-raio); padding: 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0;' };
+        })
+      });
+    }
+    out.faseLinhas = linhas;
+
+    out.temLacunas = lac.length > 0; out.semLacunas = lac.length === 0;
+    var NS = { projeto: 'projeto', kpis: 'KPIs', fontes_dados: 'fontes de dados', fases: 'fases', capacidades: 'capacidades', hipoteses: 'hipóteses', roadmap: 'roadmap' };
+    out.lacunas = lac.map(function (l) { return { secao: NS[norm(l.secao)] || l.secao || 'geral', falta: l.o_que_falta, depende: has(l.depende_de) ? l.depende_de : 'a definir' }; });
+
+    var cap = d.capacidades || [], nCaps = 0;
+    cap.forEach(function (g) { nCaps += (g.itens || []).length; });
+    var R = d.roadmap || {}, nItens = (R.itens || []).length, nTrilhas = (R.trilhas || []).length, H = d.hipoteses || [];
+    out.proximas = [
+      { nome: 'Capacidades', rotulo: 'prancha 2', href: 'Capacidades.dc.html', cta: 'Ver capacidades',
+        resumo: cap.length ? cap.length + (cap.length === 1 ? ' grupo, ' : ' grupos, ') + nCaps + (nCaps === 1 ? ' capacidade' : ' capacidades') + ', cada uma com o estado.' : 'Sem capacidades registradas ainda.' },
+      { nome: 'Roadmap', rotulo: 'prancha 3', href: 'Roadmap.dc.html', cta: 'Ver roadmap',
+        resumo: nItens ? nItens + (nItens === 1 ? ' etapa' : ' etapas') + ' em ' + nTrilhas + (nTrilhas === 1 ? ' trilha' : ' trilhas') + ', com marcos e dependências.' : 'Sem etapas registradas ainda.' },
+      { nome: 'Hipóteses', rotulo: 'prancha 4', href: 'Hipoteses.dc.html', cta: 'Ver hipóteses',
+        resumo: H.length ? H.length + (H.length === 1 ? ' hipótese' : ' hipóteses') + ', com métrica e resultado esperado.' : 'Sem hipóteses registradas ainda.' }
+    ];
+
+    var RF = (d.ref && d.ref.fontes) || [];
+    out.refFontes = RF.filter(function (f) { return has(f.rotulo) || has(f.url); }).map(function (f) {
+      var url = has(f.url) && /^https?:\/\//i.test(f.url) ? f.url : '';
+      return { rotulo: has(f.rotulo) ? f.rotulo : url, url: url, link: !!url, texto: !url };
+    });
+    out.semRefFontes = out.refFontes.length === 0;
+    return out;
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "vanta-produto/projeto.schema.json",
+  "title": "projeto.json (v1)",
+  "description": "Contrato entre documento-de-projeto e visual-de-projeto. Lista vazia é válida e a prancha mostra o estado vazio. null significa desconhecido e aparece como 'a definir'. Número, nome, data ou cliente sem fonte não entra: vira lacunas[].",
+  "type": "object",
+  "required": ["versao", "ref", "projeto"],
+  "additionalProperties": false,
+  "$defs": {
+    "data": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "dataOuNulo": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "texto": { "type": ["string", "null"] },
+    "url": { "type": ["string", "null"], "pattern": "^(https?://.*)?$" },
+    "cor": { "type": ["string", "null"], "pattern": "^#[0-9a-fA-F]{6}$" }
+  },
+  "properties": {
+    "versao": { "const": 1 },
+    "ref": {
+      "type": "object",
+      "required": ["data"],
+      "additionalProperties": false,
+      "properties": {
+        "data": { "$ref": "#/$defs/data" },
+        "fontes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "rotulo": { "$ref": "#/$defs/texto" },
+              "url": { "$ref": "#/$defs/url" }
+            }
+          }
+        }
+      }
+    },
+    "documento": {
+      "description": "O documento do projeto no Drive: um só arquivo, atualizado no lugar. O mapa e o projeto do Linear citam este link e esta versão (scripts/conferir-versao.mjs confere).",
+      "type": "object",
+      "required": ["id", "url", "versao"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[\\w-]+$" },
+        "url": { "type": "string", "pattern": "^https://docs\\.google\\.com/document/d/" },
+        "versao": { "type": "string", "pattern": "^v[1-9]\\d*$" },
+        "atualizado_em": { "$ref": "#/$defs/dataOuNulo" }
+      }
+    },
+    "projeto": {
+      "type": "object",
+      "required": ["nome"],
+      "additionalProperties": false,
+      "properties": {
+        "nome": { "type": "string", "minLength": 1 },
+        "linear_id": { "$ref": "#/$defs/texto" },
+        "linear_url": { "$ref": "#/$defs/url" },
+        "kicker": { "$ref": "#/$defs/texto" },
+        "statement": { "$ref": "#/$defs/texto" },
+        "destaque": { "$ref": "#/$defs/texto" },
+        "descricao": { "$ref": "#/$defs/texto" },
+        "acento": { "$ref": "#/$defs/cor" },
+        "dono": { "$ref": "#/$defs/texto" },
+        "prazo": { "$ref": "#/$defs/dataOuNulo" },
+        "status": { "$ref": "#/$defs/texto" }
+      }
+    },
+    "kpis": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["valor", "rotulo"],
+        "additionalProperties": false,
+        "properties": {
+          "valor": { "type": "string" },
+          "rotulo": { "type": "string" },
+          "invertido": { "type": "boolean" },
+          "fonte": { "$ref": "#/$defs/texto" }
+        }
+      }
+    },
+    "fontes_dados": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["nome"],
+        "additionalProperties": false,
+        "properties": {
+          "nome": { "type": "string" },
+          "papel": { "$ref": "#/$defs/texto" },
+          "descricao": { "$ref": "#/$defs/texto" },
+          "cor": { "$ref": "#/$defs/cor" }
+        }
+      }
+    },
+    "fases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["n", "nome"],
+        "additionalProperties": false,
+        "properties": {
+          "n": { "type": "integer", "minimum": 0, "description": "Número da fase. A fase 0 existe nos docs." },
+          "nome": { "type": "string" },
+          "duracao": { "$ref": "#/$defs/texto" },
+          "descricao": { "$ref": "#/$defs/texto" },
+          "gate": { "$ref": "#/$defs/texto" }
+        }
+      }
+    },
+    "capacidades": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["grupo", "itens"],
+        "additionalProperties": false,
+        "properties": {
+          "grupo": { "type": "string" },
+          "itens": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["nome", "estado"],
+              "additionalProperties": false,
+              "properties": {
+                "nome": { "type": "string" },
+                "descricao": { "$ref": "#/$defs/texto" },
+                "estado": { "enum": ["no go-live", "depois", "fora", null], "description": "null: a fonte não diz o estado. Aparece como 'a definir' na prancha." }
+              }
+            }
+          }
+        }
+      }
+    },
+    "hipoteses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["hipotese"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/texto" },
+          "hipotese": { "type": "string" },
+          "metrica": { "$ref": "#/$defs/texto" },
+          "resultado_esperado": { "$ref": "#/$defs/texto" },
+          "ferramenta": { "$ref": "#/$defs/texto" },
+          "situacao": { "$ref": "#/$defs/texto" },
+          "fonte": { "$ref": "#/$defs/texto" }
+        }
+      }
+    },
+    "roadmap": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "janela": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "inicio": { "$ref": "#/$defs/data" },
+            "fim": { "$ref": "#/$defs/data" }
+          }
+        },
+        "trilhas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "nome"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "nome": { "type": "string" },
+              "cor": { "$ref": "#/$defs/cor" }
+            }
+          }
+        },
+        "itens": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "trilha", "nome", "inicio", "dias"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "trilha": { "type": "string", "minLength": 1 },
+              "nome": { "type": "string" },
+              "descricao": { "$ref": "#/$defs/texto" },
+              "inicio": { "$ref": "#/$defs/data" },
+              "dias": { "type": "number", "minimum": 1, "description": "Dias úteis, descontados fins de semana e feriados[]." },
+              "entregas": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["data", "texto"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": { "$ref": "#/$defs/data" },
+                    "texto": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "dependencias": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["de", "para"],
+            "additionalProperties": false,
+            "properties": {
+              "de": { "type": "string" },
+              "para": { "type": "string" },
+              "trava": { "$ref": "#/$defs/texto" }
+            }
+          }
+        },
+        "marcos": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["data", "rotulo"],
+            "additionalProperties": false,
+            "properties": {
+              "data": { "$ref": "#/$defs/data" },
+              "rotulo": { "type": "string" },
+              "cor": { "$ref": "#/$defs/cor" }
+            }
+          }
+        },
+        "feriados": { "type": "array", "items": { "$ref": "#/$defs/data" } }
+      }
+    },
+    "lacunas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["secao", "o_que_falta"],
+        "additionalProperties": false,
+        "properties": {
+          "secao": { "type": "string", "description": "projeto, kpis, fontes_dados, fases, capacidades, hipoteses ou roadmap." },
+          "o_que_falta": { "type": "string" },
+          "depende_de": { "$ref": "#/$defs/texto" }
+        }
+      }
+    }
+  }
+}

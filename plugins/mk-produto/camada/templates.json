@@ -1,0 +1,54 @@
+{
+  "versao": 1,
+  "templates": [
+    {
+      "nome": "Ficha do Projeto",
+      "entrega": "Google Doc do projeto com as 13 seções do esqueleto da mK, mais o projeto.json que alimenta o Mapa do Projeto.",
+      "skill_do_motor": "documento-de-projeto",
+      "etapa": 3,
+      "estado": "pronto"
+    },
+    {
+      "nome": "Mapa do Projeto",
+      "entrega": "Canvas de 4 pranchas (Conceito, Capacidades, Roadmap e Hipóteses) montado a partir do projeto.json.",
+      "skill_do_motor": "visual-de-projeto",
+      "etapa": "transversal",
+      "estado": "pronto"
+    },
+    {
+      "nome": "Painel de Portfólio",
+      "entrega": "Canvas do portfólio de projetos, lido do Linear mK. Existe fora do plugin e ainda vai ser trazido para ele.",
+      "skill_do_motor": null,
+      "etapa": 3,
+      "estado": "a trazer"
+    },
+    {
+      "nome": "Mapa de Processo",
+      "entrega": "Canvas com o desenho de um processo, construído pelo esboço enquanto o formato não está fechado.",
+      "skill_do_motor": null,
+      "etapa": null,
+      "estado": "em esboço"
+    },
+    {
+      "nome": "Linha do Tempo de Fases",
+      "entrega": "Trilha horizontal com as fases de um projeto em barras e o bloco \"Depois\" à direita, com os projetos que só começam quando o atual termina. Complementa o Gantt do Mapa do Projeto.",
+      "skill_do_motor": null,
+      "etapa": "transversal",
+      "estado": "em esboço"
+    },
+    {
+      "nome": "Framing",
+      "entrega": "Documento de framing do projeto, que lê o mesmo projeto.json da Ficha do Projeto.",
+      "skill_do_motor": null,
+      "etapa": 4,
+      "estado": "a construir"
+    },
+    {
+      "nome": "PRD da Entrega",
+      "entrega": "Documento de requisitos de uma entrega, que lê o mesmo projeto.json.",
+      "skill_do_motor": null,
+      "etapa": 5,
+      "estado": "a construir"
+    }
+  ]
+}
