@@ -25,6 +25,7 @@ A lista vive em `camada/templates.json` (contrato `motor/schema/templates.schema
 | Painel de Portfólio | Canvas do portfólio, lido do Linear mK | nenhuma | nenhuma | 3 | a trazer |
 | Mapa de Processo | Canvas com o desenho de um processo | nenhuma (nasce pelo esboço) | `esboco` | nenhuma | em esboço |
 | Linha do Tempo de Fases | Trilha de fases em barras com o bloco "Depois" à direita | nenhuma (SVG pela `esboco`) | `linha-do-tempo` | transversal | em esboço |
+| `oraculo-mudanca` | Conduz uma mudança de layout ou de schema no mK Oráculo em loop: devolve o plano, executa com o subagente `oraculo-executor`, testa com o `oraculo-testador`, repete até passar e abre a PR. Não edita conteúdo, que é pelo admin | Um pedido em linguagem natural, dentro de um clone do `mk-oraculo` ("inclui um campo na landing do produto") |
 | Framing | Documento de framing do projeto | nenhuma | nenhuma | 4 | a construir |
 | PRD da Entrega | Documento de requisitos de uma entrega | nenhuma | nenhuma | 5 | a construir |
 
@@ -90,6 +91,34 @@ Para quebrar o projeto em issues depois da Ficha aprovada: "quebra o projeto de 
 
 Dúvida ou travou num passo: Flávio, dono do módulo de produto.
 
+## Mudança no Oráculo (`oraculo-mudanca`)
+
+Para quem não é dev mudar layout e schema do mK Oráculo sem codar. Diferente das outras skills deste plugin, esta **precisa de conta no GitHub** com escrita no repositório privado `metaKosmos/mk-oraculo`, de um clone dele na máquina e de commit assinado. O passo a passo dessa preparação está no README do `mk-oraculo`, seção "Primeira contribuição".
+
+Uso: abra o Claude Code na pasta do clone e descreva a mudança ("inclui um campo de frase curta na landing do produto"). A skill confere a máquina, devolve o plano e pergunta o que o pedido não decide, executa, testa e abre a PR.
+
+| Peça | Onde | O que faz |
+|---|---|---|
+| Skill | `skills/oraculo-mudanca/SKILL.md` | Conduz o loop: preparo, plano, branch, executar, testar, repetir (até três voltas), commit, PR e relato |
+| Guia | `skills/oraculo-mudanca/referencias/guia-do-oraculo.md` | Conteúdo, layout ou schema; mapa do repositório; receita de schema e de layout; o que fica fora |
+| Executor | `agents/oraculo-executor.md` | Subagente que edita, gera migration e tipos e escreve o teste. Não commita |
+| Testador | `agents/oraculo-testador.md` | Subagente que confere pelo diff e pelo script, sem ler o relato do executor. Não corrige |
+| Conferência | `scripts/oraculo-conferir.mjs` | `preparo`: a máquina e o clone estão prontos. `mudanca --rodar`: regras do guia, typecheck, lint e testes |
+
+O script só usa Node e git, e roda em Windows, macOS e Linux:
+
+```bash
+node scripts/oraculo-conferir.mjs preparo --repo <clone do mk-oraculo>
+node scripts/oraculo-conferir.mjs mudanca --repo <clone do mk-oraculo> --rodar
+```
+
+Limites, por desenho:
+
+- A PR é aberta com a skill `pr` do plugin `mk-time` (marketplace privado do time de dev). Sem ela na sessão, a skill pergunta antes de abrir direto com o `gh`.
+- A skill não publica em stage e não faz merge. O teste principal em stage é do David, dono do mK Oráculo.
+- Migration destrutiva (apagar, renomear, mudar tipo, tornar obrigatório) reprova e vai para o David.
+- Sem banco local, a tela não é conferida na máquina de quem roda, e o relato diz isso.
+
 ## Estrutura
 
 | Pasta | O que é |
@@ -97,7 +126,9 @@ Dúvida ou travou num passo: Flávio, dono do módulo de produto.
 | `motor/` | Cópia fixada do plugin `vanta-produto`: skills genéricas, schema, scripts, moldes e testes. Não é plugin aninhado (sem `.claude-plugin`). Não se edita aqui |
 | `camada/` | O que é da mK: `camada.json` (grafia, cores por área, fontes do levantamento, `gestor` do Linear, nome do arquivo, tipo Design, registro de esboços), `tokens.json` (vocabulário claro do mK Orbit), `esqueleto.md` (13 seções) e `templates.json` (a lista de templates) |
 | `skills/` | `ficha-do-projeto`, `mapa-do-projeto`, `projeto-issues` e `esboco`, que chamam o motor com a camada |
+| `agents/` | `oraculo-executor` e `oraculo-testador`, os subagentes da skill `oraculo-mudanca` |
 | `scripts/sincronizar-motor.sh` | Atualiza `motor/` a partir de um clone do vanta-plugins |
+| `scripts/oraculo-conferir.mjs` | Conferência de preparo e de mudança da skill `oraculo-mudanca` |
 
 ## De onde vem o motor
 
@@ -141,6 +172,7 @@ Flávio é o dono do módulo de produto na mK, incluindo o template de PRD e a p
 
 ## Histórico
 
+- **0.6.0:** skill `oraculo-mudanca`, com guia de conteúdo, layout e schema do mK Oráculo, subagentes `oraculo-executor` e `oraculo-testador` e o script `oraculo-conferir.mjs`.
 - **0.4.1:** motor em `c220221` (vanta-produto 0.4.1): sem o `gws`, o Doc da Ficha é criado pelo conector Google Drive do claude.ai (`--via conector`, depois `--registrar`); atualizar o conteúdo continua pedindo o `gws`. Os validadores deixam de sair calados quando o caminho do plugin passa por symlink.
 - **0.4.0:** skill `projeto-issues` (issues no Linear mK a partir do plano aprovado) e bloco `gestor` na camada (Product, Backlog, escada 1-2-3-5-8, teto 5, conector do claude.ai como alternativo com o workspace confirmado). Passo a passo de instalação para o time. Motor em `1b721a1` (vanta-produto 0.4.0): `plano-no-linear`, contrato de onze campos, versão do documento, fontes do levantamento escolhidas por sessão, lacunas por comentário no canvas.
 - **0.3.2:** moldes do visual buscam o dado sem cache (`cache: 'no-store'`), e há teste que reprova o contrário. Motor em `9d6b7a8` (vanta-produto 0.2.2).
